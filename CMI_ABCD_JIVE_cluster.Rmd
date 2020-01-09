@@ -13,8 +13,8 @@ if(!require(r.jive)){install.packages("r.jive")}
 if(!require(tidyverse)){install.packages("tidyverse")}
 
 #Read in JIVE data
-brain_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_Collab_Brain_Measures_1.4.19.csv')
-pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/phenoData_analysis_08062019.csv')
+brain_data <- read_csv('CMI_Collab_Brain_Measures_1.4.19.csv')
+pheno_data <- read_csv('phenoData_analysis_08062019.csv')
 
 ```
 
@@ -28,7 +28,7 @@ brain_datano0 <- brain_data %>%
     mutate("subid" = brain_data$subid)
 
 #Standardize (scale and center) brain data
-#brain_data_scaled <- brain_datano0 %>%
+brain_data_scaled <- brain_datano0 
     #standardize() 
 
 #Standardize (scale and center) phenotypic data

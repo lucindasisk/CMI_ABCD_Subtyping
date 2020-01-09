@@ -1,26 +1,11 @@
----
-title: "CMI_ABCD_JIVE"
-author: "Lucinda Sisk"
-date: "1/4/2020"
-output:
-  pdf_document: default
-  html_document: default
----
-
-```{r, echo=FALSE}
-
 if(!require(r.jive)){install.packages("r.jive")}
+if(!require(psycho)){install.packages("psycho")}
 if(!require(tidyverse)){install.packages("tidyverse")}
 
 #Read in JIVE data
-brain_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_Collab_Brain_Measures_1.4.19.csv')
-pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/phenoData_analysis_08062019.csv')
+brain_data <- read_csv('CMI_Collab_Brain_Measures_1.4.19.csv')
+pheno_data <- read_csv('phenoData_analysis_08062019.csv')
 
-```
-
-### Drop empty columns, combine data to ensure same IDs
-
-```{r}
 #Drop ID columns; drop all columns that sum to 0
 brain_datano0 <- brain_data %>%
     select(-c('subid')) %>%
@@ -28,12 +13,12 @@ brain_datano0 <- brain_data %>%
     mutate("subid" = brain_data$subid)
 
 #Standardize (scale and center) brain data
-#brain_data_scaled <- brain_datano0 %>%
-    #standardize() 
+brain_data_scaled <- brain_datano0 %>%
+    standardize()
 
 #Standardize (scale and center) phenotypic data
 pheno_data_scaled <- pheno_data %>%
-    #standardize() %>%
+    standardize() %>%
     rename("subid" = "subjectkey")
 
 #Merge data frames to ensure they are in same order
@@ -51,15 +36,9 @@ new_brain <- combined_df %>%
 # new_pheno$site_id_l <- as.factor(new_pheno$site_id_l)
 
 #Transpose so IDs are columns
-new_pheno_mat <- t(new_pheno) 
+new_pheno_mat <- t(new_pheno)
 new_brain_mat <- t(new_brain)
-```
-## Prepare matrices, run jive
 
-* Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
-
-
-```{r}
 #Run JIVE analysis
 
 data <- list(new_pheno_mat, new_brain_mat)
@@ -69,18 +48,11 @@ data <- list(new_pheno_mat, new_brain_mat)
 (try(cmi_jive_summary <- summary.jive(cmi_jive_result)))
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("grey20", "grey43", "grey65"))))
 (try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
-(try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = 0, n_indiv = rep(0, length(result$data)), 
-         Colors = "black", pch=1)))
+(try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = 0, n_indiv = rep(0, length(result$data)),
+                             Colors = "black", pch=1)))
 
 (try(cmi_jive_it <- jive.iter(data)))
 
 (try(cmi_jive_perm <- jive.perm(data)))
 
 (try(cmi_jive_bic <- bic.jive(data)))
-
-
-```
-
-
-
-
