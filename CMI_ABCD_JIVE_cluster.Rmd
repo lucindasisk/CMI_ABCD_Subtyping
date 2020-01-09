@@ -13,8 +13,8 @@ if(!require(r.jive)){install.packages("r.jive")}
 if(!require(tidyverse)){install.packages("tidyverse")}
 
 #Read in JIVE data
-brain_data <- read_csv('CMI_Collab_Brain_Measures_1.4.19.csv')
-pheno_data <- read_csv('phenoData_analysis_08062019.csv')
+brain_data <- read_csv('../CMI_Collab_Brain_Measures_1.4.19.csv')
+pheno_data <- read_csv('../phenoData_analysis_08062019.csv')
 
 ```
 

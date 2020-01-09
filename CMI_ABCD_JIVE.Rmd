@@ -28,7 +28,7 @@ brain_datano0 <- brain_data %>%
     mutate("subid" = brain_data$subid)
 
 #Standardize (scale and center) brain data
-#brain_data_scaled <- brain_datano0 %>%
+brain_data_scaled <- brain_datano0 
     #standardize() 
 
 #Standardize (scale and center) phenotypic data
