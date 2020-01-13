@@ -1,7 +1,7 @@
 ---
 title: "CMI_ABCD_JIVE"
 author: "Lucinda Sisk"
-date: "1/4/2020"
+date: "1/12/2020"
 output:
   pdf_document: default
   html_document: default
@@ -58,36 +58,10 @@ new_pheno <- combined_df %>%
     mutate_all(funs(replace_na(., 0))) #Replace NAs with 0's --> check if OK
 
 new_brain <- combined_df %>%
-    #select('area_L_1':'thickness_R_20442')
-    select('area_L_1':'area_L_4254')
+    select('area_L_1':'thickness_R_20442') %>%
+    mutate_all(funs(replace_na(., 0))) #Replace NAs with 0's --> check if OK
 
-area_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/Mini_Area_Meas_1.10.19.csv', col_names=TRUE) %>% 
-  select('area_L_1':'area_L_30') %>% 
-  standardize() %>% 
-  mutate_all(funs(replace_na(., 0))) %>% 
-  t()
 
-myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/Mini_Myelin_Meas_1.10.19.csv', col_names=TRUE) %>% 
-  select('myelin_L_1':'myelin_L_30') %>% 
-  standardize() %>% 
-  mutate_all(funs(replace_na(., 0))) %>% 
-  t()
-
-thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/Mini_Thick_Meas_1.10.19.csv', col_names=TRUE) %>% 
-  select('thickness_L_1':'thickness_L_30') %>% 
-  standardize() %>% 
-  mutate_all(funs(replace_na(., 0))) %>% 
-  t()
-
-cbcl_data <- combined_df %>% 
-  select('cbcl_scr_syn_anxdep_t':'cbcl_scr_07_stress_t') %>%
-  mutate_all(funs(replace_na(., 0))) %>% 
-  t()
-
-stress_data <- combined_df %>% 
-  select('su_risk_p_1': 'su_risk_p_9') %>%
-  mutate_all(funs(replace_na(., 0))) %>% 
-  t()
 
 #Convert non-continuous data to factors
 # new_pheno$sex <- as.factor(new_pheno$sex)
@@ -132,16 +106,16 @@ $\\$
 
 
 ```{r, tidy=TRUE}
-##Save images
-#Save variance images
-png(paste(plots, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
-cmi_jive_var
-dev.off()
-
-#Save heatmaps
-png(paste(plots, /CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
-cmi_jive_heatmaps
-dev.off()
+# ##Save images
+# #Save variance images
+# png(paste(here, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
+# cmi_jive_var
+# dev.off()
+# 
+# #Save heatmaps
+# png(paste(here, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
+# cmi_jive_heatmaps
+# dev.off()
 ```
 
 
