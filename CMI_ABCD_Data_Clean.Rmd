@@ -21,8 +21,8 @@ load_pck <- function(pkg){
 load_pck(list.of.packages)
 
 path <- here()
-data <- paste()
-plots <- paste(path,'../../../Box/LS_Folders/CMI_ABCD/R.JIVE/plots', sep='/')
+home <- "/Users/lucindasisk/Box/LS_Folders/CMI_ABCD" #paste(path,'../../../Box/LS_Folders/CMI_ABCD', sep='/')
+plots <- paste(home,'R.JIVE/plots', sep='/')
 
 #Read in JIVE data
 brain_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_Collab_Brain_Measures_1.4.19.csv')
@@ -40,6 +40,14 @@ samp2_ids <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_ABCD_Sampl
 
 ```
 
+
+```{r, echo=FALSE, include=FALSE, tidy=TRUE}
+#Read in last 50 sub pheno
+disc_pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_metrics/discovery_addition_pheno_1.14.20.csv', col_names=TRUE)
+
+rep_pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_metrics/replicate_pheno_1.14.20.csv', col_names=TRUE)
+
+```
 ### Score ABCD Trauma Data
 
 ```{r, tidy=TRUE}
@@ -72,15 +80,35 @@ abcd_trauma_scored <- abcd_trauma %>%
   mutate(trauma_num = rowSums(.[2:18])) %>%
   #Add new column with cleaned subid
   mutate("subjectkey" = str_remove(src_subject_id, "[_]")) %>% 
+  #Add new col with scaled trauma data
+  mutate("trauma_num_scaled" = scale(trauma_num)) %>% 
   #Drop NAs
   na.omit() 
 
-samp1_trauma_num <- left_join(samp1_ids, abcd_trauma_scored, by = "subjectkey")
-samp2_trauma_num <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey")
+#Get column names of original data
+pheno_data_cols <- colnames(pheno_data)
+
+#Add scaled trauma data to phenotypic dataset (sample 1)
+final_sample1 <- left_join(samp1_ids, abcd_trauma_scored, by = "subjectkey") %>% 
+  select("subjectkey", "trauma_num") %>% 
+  left_join(disc_pheno_data, by = c('subjectkey'="subjectkey")) %>% 
+  select(pheno_data_cols) %>% 
+  rbind(., pheno_data)
+
+#Add scaled trauma data to phenotypica dataset (sample 2)
+final_sample2 <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey") %>% 
+  select("subjectkey", "trauma_num") %>% 
+  left_join(rep_pheno_data, by = c('subjectkey'="subjectkey")) %>% 
+  select(pheno_data_cols)
 
 ```
 
-### Drop empty columns, combine data to ensure same IDs
+
+```{r, tidy=TRUE}
+#Write final sample1 and sample2 data to CSV
+
+
+```
 
 ```{r, tidy=TRUE}
 #Drop ID columns; drop all columns that sum to 0
@@ -122,7 +150,7 @@ new_brain_mat <- t(new_brain)
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
 ```{r, tidy=TRUE}
 #data1 <- list(area_data, myelin_data, stress_data, thick_data, cbcl_data) 
-data <- list(new_pheno_mat, new_brain_mat)
+data <- list(new_pheno_mat, new_pheno_mat)
 ```
 
 ```{r, tidy=TRUE}

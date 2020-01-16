@@ -31,13 +31,6 @@ pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/phenoData_ana
 #Read in raw trauma endorsements
 abcd_trauma <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/abcd_ptsd01.txt', col_names=TRUE) %>%
   filter(eventname=="baseline_year_1_arm_1")
-
-#Read in Sample 1 Subids
-samp1_ids <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_ABCD_Sample1_IDs.csv', col_names=TRUE)
-
-#Read in Sample 2 Subids 
-samp2_ids <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_ABCD_Sample2_IDs.csv', col_names=TRUE)
-
 ```
 
 ### Score ABCD Trauma Data
@@ -71,12 +64,10 @@ abcd_trauma_scored <- abcd_trauma %>%
   #Create summed scores of trauma exposures
   mutate(trauma_num = rowSums(.[2:18])) %>%
   #Add new column with cleaned subid
-  mutate("subjectkey" = str_remove(src_subject_id, "[_]")) %>% 
+  mutate("subid" = str_remove(src_subject_id, "[_]")) %>% 
   #Drop NAs
   na.omit() 
 
-samp1_trauma_num <- left_join(samp1_ids, abcd_trauma_scored, by = "subjectkey")
-samp2_trauma_num <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey")
 
 ```
 
@@ -88,6 +79,10 @@ brain_datano0 <- brain_data %>%
     select(-c('subid')) %>%
     select_if(colSums(.) > 0 ) %>%
     mutate("subid" = brain_data$subid)
+
+#Standardize (scale and center) brain data
+brain_data_scaled <- brain_datano0 %>% 
+    standardize() 
 
 #Standardize (scale and center) phenotypic data
 pheno_data_scaled <- pheno_data %>%
@@ -122,7 +117,7 @@ new_brain_mat <- t(new_brain)
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
 ```{r, tidy=TRUE}
 #data1 <- list(area_data, myelin_data, stress_data, thick_data, cbcl_data) 
-data <- list(new_pheno_mat, new_brain_mat)
+data <- list(new_pheno_mat, new_pheno_mat)
 ```
 
 ```{r, tidy=TRUE}
