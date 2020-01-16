@@ -28,16 +28,6 @@ plots <- paste(path,'../../../Box/LS_Folders/CMI_ABCD/R.JIVE/plots', sep='/')
 brain_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_Collab_Brain_Measures_1.4.19.csv')
 pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/phenoData_analysis_08062019.csv')
 
-#Read in raw trauma endorsements
-abcd_trauma <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/abcd_ptsd01.txt', col_names=TRUE) %>%
-  filter(eventname=="baseline_year_1_arm_1")
-
-#Read in Sample 1 Subids
-samp1_ids <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_ABCD_Sample1_IDs.csv', col_names=TRUE)
-
-#Read in Sample 2 Subids 
-samp2_ids <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_ABCD_Sample2_IDs.csv', col_names=TRUE)
-
 ```
 
 ### Score ABCD Trauma Data
@@ -84,7 +74,7 @@ samp2_trauma_num <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey")
 
 ```{r, tidy=TRUE}
 #Drop ID columns; drop all columns that sum to 0
-brain_datano0 <- brain_data %>%
+brain_data_scaled <- brain_data %>%
     select(-c('subid')) %>%
     select_if(colSums(.) > 0 ) %>%
     mutate("subid" = brain_data$subid)
