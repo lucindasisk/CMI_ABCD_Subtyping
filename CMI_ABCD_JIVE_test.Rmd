@@ -11,6 +11,7 @@ output:
 
 require(tidyverse)
 require(r.jive)
+require(tinytex)
 
 cat("Making a test")
 ```
