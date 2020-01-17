@@ -83,8 +83,8 @@ data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
 ```
 
 ## Results:
-* Joint Rank: `r result_joint_rank`
-* Individual Ranks: `r result_individ_rank`
+* Joint Rank: 
+* Individual Ranks: 
 
 
 $\\$
