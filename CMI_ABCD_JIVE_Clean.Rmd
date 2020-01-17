@@ -9,48 +9,45 @@ output:
 
 ```{r, echo=FALSE, include=FALSE, tidy=TRUE}
 
-list.of.packages <- c("tidyverse", "psycho", "r.jive", "here")
-
-load_pck <- function(pkg){
-  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(new.pkg))
-    install.packages(new.pkg, dependencies = TRUE)
-  sapply(pkg, require, character.only = TRUE)
-}
-
-load_pck(list.of.packages)
+require(tidyverse)
+require(r.jive)
 
 results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
 #Read in JIVE data
 
-# pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
-# myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-# thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+#LS final pheno data - Sample 1
+pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
+#SJH final myelin data - Sample 1
+myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+#SJH final thickness data - Sample 1
+thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 
-pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
-myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+# pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
+# myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+# thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 
 ```
 
 ### Drop empty columns, combine data to ensure same IDs
 
 ```{r, tidy=TRUE}
+#Function that checks if columns contain all NaNs
 not_all_na <- function(x) any(!is.na(x))
 
-#Drop ID columns; drop all columns that sum to 0
+#Drop ID columns; drop all columns that contain ALL NaNs
 myelin_data_clean <- myelin_data %>%
   select_if(not_all_na) 
 
-#Drop ID columns; drop all columns that sum to 0
+#Drop ID columns; drop all columns that contain ALL NaNs
 thick_data_clean <- thick_data %>%
   select_if(not_all_na) 
 
-#Merge data frames to ensure they are in same order
+#Merge data frames to ensure subjects are in same order
 brain_df <- right_join(myelin_data_clean, thick_data_clean, by = 'subid')
 pheno_brain <- full_join(pheno_data, myelin_data_clean, by=c('subjectkey'='subid'))
 
+#Create new data frame for each, select only variables of interest
 new_myelin <- brain_df %>% 
   select("zmyelin_set1":"zmyelin_set16383")
 
@@ -60,17 +57,20 @@ new_thick <- brain_df %>%
 new_pheno <- pheno_brain %>% 
   select("cbcl_scr_syn_anxdep_t":"trauma_num")
 
-#Transpose so IDs are columns
+#Transpose into matrices so IDs are columns; measures are rows
 new_pheno_mat <- t(new_pheno) 
 new_myelin_mat <- t(new_myelin)
 new_thick_mat <- t(new_thick)
 ```
+
 ## Prepare matrices, run jive
 
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
 ```{r, tidy=TRUE}
+
 #Combine measures into list
 data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
+
 ```
 
 ```{r, tidy=TRUE}
@@ -79,7 +79,7 @@ data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data, scale = FALSE)))
+(try(cmi_jive_result <- jive(data, scale = FALSE))) #Use scale = FALSE since data already scaled/controlled/COMBAT corrected
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
