@@ -9,16 +9,8 @@ output:
 
 ```{r, echo=FALSE, include=FALSE, tidy=TRUE}
 
-list.of.packages <- c("tidyverse", "psycho", "r.jive", "here")
-
-load_pck <- function(pkg){
-  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(new.pkg))
-    install.packages(new.pkg, dependencies = TRUE)
-  sapply(pkg, require, character.only = TRUE)
-}
-
-load_pck(list.of.packages)
+require(tidyverse)
+require(r.jive)
 
 results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
