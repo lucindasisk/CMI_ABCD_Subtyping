@@ -12,4 +12,4 @@
 
 date=$(date +%m.%d.%Y)
 
-R CMI_ABCD_JIVE_test.Rmd
+Rscript CMI_ABCD_JIVE_test.Rmd
