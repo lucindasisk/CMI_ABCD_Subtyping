@@ -81,9 +81,13 @@ abcd_trauma_scored <- abcd_trauma %>%
   #Add new column with cleaned subid
   mutate("subjectkey" = str_remove(src_subject_id, "[_]")) %>% 
   #Add new col with scaled trauma data
-  mutate("trauma_num_scaled" = scale(trauma_num)) %>% 
+  mutate("trauma_num" = scale(trauma_num)) %>% 
   #Drop NAs
   na.omit() 
+
+#Scale trauma data in phenotypic dataset
+pheno_data_scaled <- pheno_data %>% 
+  mutate("trauma_num" = scale(trauma_num))
 
 #Get column names of original data
 pheno_data_cols <- colnames(pheno_data)
@@ -91,9 +95,9 @@ pheno_data_cols <- colnames(pheno_data)
 #Add scaled trauma data to phenotypic dataset (sample 1)
 final_sample1 <- left_join(samp1_ids, abcd_trauma_scored, by = "subjectkey") %>% 
   select("subjectkey", "trauma_num") %>% 
-  left_join(disc_pheno_data, by = c('subjectkey'="subjectkey")) %>% 
+  right_join(disc_pheno_data, by = c('subjectkey'="subjectkey")) %>% 
   select(pheno_data_cols) %>% 
-  rbind(., pheno_data)
+  rbind(., pheno_data_scaled)
 
 #Add scaled trauma data to phenotypica dataset (sample 2)
 final_sample2 <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey") %>% 
@@ -105,8 +109,10 @@ final_sample2 <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey") %>%
 
 
 ```{r, tidy=TRUE}
-#Write final sample1 and sample2 data to CSV
 
+#Write final sample1 and sample2 data to CSV
+write_csv(final_sample1, paste(home, 'final_pheno_sample1_LS_1.15.19.csv', sep='/'))
+write_csv(final_sample2, paste(home, 'final_pheno_sample2_LS_1.15.19.csv', sep='/'))
 
 ```
 

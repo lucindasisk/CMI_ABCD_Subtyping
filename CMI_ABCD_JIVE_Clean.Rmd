@@ -20,99 +20,57 @@ load_pck <- function(pkg){
 
 load_pck(list.of.packages)
 
-path <- here()
-data <- paste()
-plots <- paste(path,'../../../Box/LS_Folders/CMI_ABCD/R.JIVE/plots', sep='/')
+results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
 #Read in JIVE data
-brain_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/CMI_Collab_Brain_Measures_1.4.19.csv')
-pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/phenoData_analysis_08062019.csv')
 
-```
+# pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
+# myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+# thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 
-### Score ABCD Trauma Data
-
-```{r, tidy=TRUE}
-
-#Score abcd trauma data
-abcd_trauma_scored <- abcd_trauma %>%
-  #Ensure conversion to data frame
-  data.frame() %>%
-  #Select columns of interest
-  select(src_subject_id, ksads_ptsd_raw_754_p:ksads_ptsd_raw_770_p) %>%
-  #Convert score columns to numeric type for summing
-  type_convert(col_types = cols(ksads_ptsd_raw_754_p ="i",
-                                ksads_ptsd_raw_755_p ="i",
-                                ksads_ptsd_raw_756_p ="i",
-                                ksads_ptsd_raw_757_p ="i",
-                                ksads_ptsd_raw_758_p ="i",
-                                ksads_ptsd_raw_759_p ="i",
-                                ksads_ptsd_raw_760_p ="i",
-                                ksads_ptsd_raw_761_p ="i",
-                                ksads_ptsd_raw_762_p ="i",
-                                ksads_ptsd_raw_763_p ="i",
-                                ksads_ptsd_raw_764_p ="i",
-                                ksads_ptsd_raw_765_p ="i",
-                                ksads_ptsd_raw_766_p ="i",
-                                ksads_ptsd_raw_767_p ="i",
-                                ksads_ptsd_raw_768_p ="i",
-                                ksads_ptsd_raw_769_p ="i",
-                                ksads_ptsd_raw_770_p  = "i")) %>%
-  #Create summed scores of trauma exposures
-  mutate(trauma_num = rowSums(.[2:18])) %>%
-  #Add new column with cleaned subid
-  mutate("subjectkey" = str_remove(src_subject_id, "[_]")) %>% 
-  #Drop NAs
-  na.omit() 
-
-samp1_trauma_num <- left_join(samp1_ids, abcd_trauma_scored, by = "subjectkey")
-samp2_trauma_num <- left_join(samp2_ids, abcd_trauma_scored, by = "subjectkey")
+pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
+myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 
 ```
 
 ### Drop empty columns, combine data to ensure same IDs
 
 ```{r, tidy=TRUE}
-#Drop ID columns; drop all columns that sum to 0
-brain_data_scaled <- brain_data %>%
-    select(-c('subid')) %>%
-    select_if(colSums(.) > 0 ) %>%
-    mutate("subid" = brain_data$subid)
+not_all_na <- function(x) any(!is.na(x))
 
-#Standardize (scale and center) phenotypic data
-pheno_data_scaled <- pheno_data %>%
-    standardize() %>%
-    rename("subid" = "subjectkey")
+#Drop ID columns; drop all columns that sum to 0
+myelin_data_clean <- myelin_data %>%
+  select_if(not_all_na) 
+
+#Drop ID columns; drop all columns that sum to 0
+thick_data_clean <- thick_data %>%
+  select_if(not_all_na) 
 
 #Merge data frames to ensure they are in same order
-combined_df <- right_join(pheno_data_scaled, brain_data_scaled, by = 'subid')
+brain_df <- right_join(myelin_data_clean, thick_data_clean, by = 'subid')
+pheno_brain <- full_join(pheno_data, myelin_data_clean, by=c('subjectkey'='subid'))
 
-###############################################################################################
+new_myelin <- brain_df %>% 
+  select("zmyelin_set1":"zmyelin_set16383")
 
-new_pheno <- combined_df %>%
-    select('interview_age','cbcl_scr_syn_anxdep_t':'trauma_num') %>%
-    mutate_all(funs(replace_na(., 0))) #Replace NAs with 0's --> check if OK
+new_thick <- brain_df %>% 
+  select("zthickness_set1":"zthickness_set16383")
 
-new_brain <- combined_df %>%
-    select('area_L_1':'thickness_R_20442') %>%
-    mutate_all(funs(replace_na(., 0))) #Replace NAs with 0's --> check if OK
-
-
-
-#Convert non-continuous data to factors
-# new_pheno$sex <- as.factor(new_pheno$sex)
-# new_pheno$site_id_l <- as.factor(new_pheno$site_id_l)
+new_pheno <- pheno_brain %>% 
+  select("cbcl_scr_syn_anxdep_t":"trauma_num")
 
 #Transpose so IDs are columns
 new_pheno_mat <- t(new_pheno) 
-new_brain_mat <- t(new_brain)
+new_myelin_mat <- t(new_myelin)
+new_thick_mat <- t(new_thick)
 ```
 ## Prepare matrices, run jive
 
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
 ```{r, tidy=TRUE}
-#data1 <- list(area_data, myelin_data, stress_data, thick_data, cbcl_data) 
-data <- list(new_pheno_mat, new_brain_mat)
+#Combine measures into list
+data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
 ```
 
 ```{r, tidy=TRUE}
@@ -121,7 +79,7 @@ data <- list(new_pheno_mat, new_brain_mat)
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data, scale = TRUE)))
+(try(cmi_jive_result <- jive(data, scale = FALSE)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -134,7 +92,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
-try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = 1, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1,1), Colors = c("#811c4e", "#fdb663")))
 #No clustering efects apparent
 
 ```
@@ -148,16 +106,21 @@ $\\$
 
 
 ```{r, tidy=TRUE}
-# ##Save images
-# #Save variance images
-# png(paste(here, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
-# cmi_jive_var
-# dev.off()
-# 
-# #Save heatmaps
-# png(paste(here, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
-# cmi_jive_heatmaps
-# dev.off()
+##Save images
+#Save variance images
+png(paste(results, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
+cmi_jive_var
+dev.off()
+
+#Save heatmaps
+png(paste(results, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
+cmi_jive_heatmaps
+dev.off()
+
+#Save PCA plots
+png(paste(results, "/CMI_JIVE_PCA_plots.png", sep=''),height=600,width=600)
+cmi_jive_pca
+dev.off()
 ```
 
 
