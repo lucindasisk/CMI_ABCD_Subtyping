@@ -69,7 +69,8 @@ new_brain_mat <- t(new_brain)
 ```{r, tidy=TRUE}
 #Combine measures into list
 #data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
-data <- list(new_pheno_mat, new_brain_mat)
+#data <- list(new_pheno_mat, new_brain_mat)
+data <- list(new_myelin_mat, new_thick_mat)
 ```
 
 ```{r, tidy=TRUE}
