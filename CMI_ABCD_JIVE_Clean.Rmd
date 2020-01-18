@@ -12,8 +12,6 @@ output:
 require(tidyverse)
 require(r.jive)
 
-results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
-
 #Read in JIVE data
 
 #LS final pheno data - Sample 1
@@ -22,10 +20,6 @@ pheno_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/final_pheno_s
 myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
 #SJH final thickness data - Sample 1
 thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
-
-# pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/final_pheno_sample1_LS_1.15.19.csv', col_names = TRUE)
-# myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-# thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 
 ```
 
@@ -106,21 +100,21 @@ $\\$
 
 
 ```{r, tidy=TRUE}
-##Save images
-#Save variance images
-png(paste(results, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
-cmi_jive_var
-dev.off()
-
-#Save heatmaps
-png(paste(results, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
-cmi_jive_heatmaps
-dev.off()
-
-#Save PCA plots
-png(paste(results, "/CMI_JIVE_PCA_plots.png", sep=''),height=600,width=600)
-cmi_jive_pca
-dev.off()
+# ##Save images
+# #Save variance images
+# png(paste(results, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
+# cmi_jive_var
+# dev.off()
+# 
+# #Save heatmaps
+# png(paste(results, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
+# cmi_jive_heatmaps
+# dev.off()
+# 
+# #Save PCA plots
+# png(paste(results, "/CMI_JIVE_PCA_plots.png", sep=''),height=600,width=600)
+# cmi_jive_pca
+# dev.off()
 ```
 
 

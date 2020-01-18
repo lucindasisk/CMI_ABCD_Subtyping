@@ -46,23 +46,30 @@ pheno_brain <- full_join(pheno_data, myelin_data_clean, by=c('subjectkey'='subid
 new_myelin <- brain_df %>% 
   select("zmyelin_set1":"zmyelin_set16383")
 
-new_thick <- brain_df %>% 
+new_thick <- brain_df %>%
   select("zthickness_set1":"zthickness_set16383")
 
 new_pheno <- pheno_brain %>% 
   select("cbcl_scr_syn_anxdep_t":"trauma_num")
 
+new_brain <- brain_df %>% 
+  select("zmyelin_set1":"zthickness_set16383")
+
 #Transpose so IDs are columns
 new_pheno_mat <- t(new_pheno) 
 new_myelin_mat <- t(new_myelin)
 new_thick_mat <- t(new_thick)
+
+#Transopose brain matrix
+new_brain_mat <- t(new_brain)
 ```
 ## Prepare matrices, run jive
 
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
 ```{r, tidy=TRUE}
 #Combine measures into list
-data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
+#data <- list(new_pheno_mat, new_myelin_mat, new_thick_mat)
+data <- list(new_pheno_mat, new_brain_mat)
 ```
 
 ```{r, tidy=TRUE}
