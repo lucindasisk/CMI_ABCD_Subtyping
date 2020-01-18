@@ -105,21 +105,21 @@ $\\$
 
 
 ```{r, tidy=TRUE}
-##Save images
-#Save variance images
-png(paste(results, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
-cmi_jive_var
-dev.off()
-
-#Save heatmaps
-png(paste(results, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
-cmi_jive_heatmaps
-dev.off()
-
-#Save PCA plots
-png(paste(results, "/CMI_JIVE_PCA_plots.png", sep=''),height=600,width=600)
-cmi_jive_pca
-dev.off()
+# ##Save images
+# #Save variance images
+# png(paste(results, "/CMI_JIVE_VarExplained.png", sep=''),height=300,width=450)
+# cmi_jive_var
+# dev.off()
+# 
+# #Save heatmaps
+# png(paste(results, "/CMI_JIVE_Heatmaps.png", sep=''),height=465,width=705)
+# cmi_jive_heatmaps
+# dev.off()
+# 
+# #Save PCA plots
+# png(paste(results, "/CMI_JIVE_PCA_plots.png", sep=''),height=600,width=600)
+# cmi_jive_pca
+# dev.off()
 ```
 
 
