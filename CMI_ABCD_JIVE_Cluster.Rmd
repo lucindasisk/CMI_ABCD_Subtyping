@@ -91,7 +91,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
-try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1,1), Colors = c("#811c4e", "#fdb663")))
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
 #No clustering efects apparent
 
 ```
