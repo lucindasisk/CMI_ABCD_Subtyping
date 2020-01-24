@@ -1,0 +1,25 @@
+---
+title: "JIVE_Toy_Example"
+author: "Lucinda Sisk"
+date: "1/22/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(r.jive)
+
+
+toy_df <- SimData
+
+```
+
+```{r}
+
+toy_jive <- jive(toy_df)
+toy_var <- showVarExplained(toy_jive)
+toy_pca <- showPCA(toy_jive)
+toy_heatmaps <- showHeatmaps(toy_jive)
+
+```
