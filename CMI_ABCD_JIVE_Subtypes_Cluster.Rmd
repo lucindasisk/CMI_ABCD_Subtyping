@@ -7,7 +7,7 @@ output:
   html_document: default
 ---
 
-```{r, echo=FALSE, include=FALSE, tidy=TRUE}
+```{r read_in_data, echo=FALSE, include=FALSE, tidy=TRUE}
 
 require(tidyverse)
 require(r.jive)
@@ -33,7 +33,7 @@ uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/
 
 ### Drop empty columns, combine data to ensure same IDs
 
-```{r, tidy=TRUE}
+```{r clean_data, tidy=TRUE}
 not_all_na <- function(x) any(!is.na(x))
 
 #Drop ID columns; drop all columns that sum to 0
@@ -90,7 +90,7 @@ group_4_pheno <- brain_df %>%
 ```
 
 
-```{r, tidy=TRUE}
+```{r assign_groups_transpose, tidy=TRUE}
 #Select subgroup information
 
 group_1_brain_mat <- t(group_1_brain)
@@ -110,7 +110,7 @@ group_4_pheno_mat <- t(group_4_pheno)
 ## Prepare matrices, run jive
 
 * Data requirements: A list of two or more linked data matrices on which to perform the JIVE decomposition. These matrices must have the same column dimension, which is assumed to be common.
-```{r, tidy=TRUE}
+```{r create_data_lists, tidy=TRUE}
 #Combine measures into list
 
 data_1 <- list(group_1_pheno_mat, group_1_brain_mat)
@@ -123,7 +123,7 @@ all_data <- c(data_1, data_2, data_3, data_4)
 all_data[1]
 ```
 
-```{r, tidy=TRUE}
+```{r run_JIVE_data1, tidy=TRUE}
 #Run JIVE analysis for GROUP 1
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -147,7 +147,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ```
 
-```{r, tidy=TRUE}
+```{rrun_JIVE_data2, tidy=TRUE}
 #Run JIVE analysis for GROUP 2
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -171,7 +171,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ```
 
-```{r, tidy=TRUE}
+```{r run_JIVE_data3, tidy=TRUE}
 #Run JIVE analysis for GROUP 3
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -195,7 +195,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ```
 
-```{r, tidy=TRUE}
+```{r run_JIVE_data4, tidy=TRUE}
 #Run JIVE analysis for GROUP 4
 
 #Estimate JIVE ranks based on permutation testing (best validated)
