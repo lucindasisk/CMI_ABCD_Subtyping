@@ -119,8 +119,6 @@ data_3 <- list(group_3_pheno_mat, group_3_brain_mat)
 data_4 <- list(group_4_pheno_mat, group_4_brain_mat)
 
 all_data <- c(data_1, data_2, data_3, data_4)
-
-all_data[1]
 ```
 
 ```{r run_JIVE_data1, tidy=TRUE}
@@ -129,7 +127,7 @@ all_data[1]
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_1, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_1, scale = FALSE, conv=0.01)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -153,7 +151,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_2, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_2, scale = FALSE, conv=0.01)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -177,7 +175,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_3, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_3, scale = FALSE, conv=0.01)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -201,7 +199,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_4, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_4, scale = FALSE, conv=0.01)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
