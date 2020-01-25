@@ -127,7 +127,7 @@ all_data <- c(data_1, data_2, data_3, data_4)
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_1, scale = FALSE, conv=0.01)))
+(try(cmi_jive_result <- jive(data_1, scale = FALSE, conv=0.05)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -144,14 +144,15 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #No clustering efects apparent
 
 ```
+### Group 1 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{rrun_JIVE_data2, tidy=TRUE, dpi=50}
+```{r run_JIVE_data2, tidy=TRUE, dpi=50}
 #Run JIVE analysis for GROUP 2
 
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_2, scale = FALSE, conv=0.01)))
+(try(cmi_jive_result <- jive(data_2, scale = FALSE, conv=0.05)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -168,6 +169,8 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #No clustering efects apparent
 
 ```
+
+### Group 2 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
 ```{r run_JIVE_data3, tidy=TRUE, dpi=50}
 #Run JIVE analysis for GROUP 3
@@ -175,7 +178,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_3, scale = FALSE, conv=0.01)))
+(try(cmi_jive_result <- jive(data_3, scale = FALSE, conv=0.05)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -192,6 +195,8 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #No clustering efects apparent
 
 ```
+
+### Group 3 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
 ```{r run_JIVE_data4, tidy=TRUE, dpi=50}
 #Run JIVE analysis for GROUP 4
@@ -199,7 +204,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_4, scale = FALSE, conv=0.01)))
+(try(cmi_jive_result <- jive(data_4, scale = FALSE, conv=0.05)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -217,7 +222,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ```
 
-$\\$
+### Group 4 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
 
 ```{r, tidy=TRUE}
