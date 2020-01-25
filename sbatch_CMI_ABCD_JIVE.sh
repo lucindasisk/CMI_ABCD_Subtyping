@@ -14,4 +14,4 @@ date=$(date +%m.%d.%Y)
 
 
 R -e "rmarkdown::render('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Subtyping/CMI_ABCD_JIVE_Subtypes_Cluster.Rmd',
-output_file='/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results/CMI_ABCD_JIVE_Subtype_Report_conv=0.01.pdf')"
+output_file='/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results/CMI_ABCD_JIVE_Subtype_Report_conv=0.05.pdf')"
