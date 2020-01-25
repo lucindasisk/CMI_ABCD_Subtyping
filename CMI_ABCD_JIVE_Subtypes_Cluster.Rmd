@@ -121,7 +121,7 @@ data_4 <- list(group_4_pheno_mat, group_4_brain_mat)
 all_data <- c(data_1, data_2, data_3, data_4)
 ```
 
-```{r run_JIVE_data1, tidy=TRUE}
+```{r run_JIVE_data1, tidy=TRUE, dpi=30}
 #Run JIVE analysis for GROUP 1
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -146,7 +146,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 ```
 ### Group 1 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r run_JIVE_data2, tidy=TRUE, dpi=50}
+```{r run_JIVE_data2, tidy=TRUE, dpi=30}
 #Run JIVE analysis for GROUP 2
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -172,7 +172,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 2 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r run_JIVE_data3, tidy=TRUE, dpi=50}
+```{r run_JIVE_data3, tidy=TRUE, dpi=30}
 #Run JIVE analysis for GROUP 3
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -198,7 +198,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 3 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r run_JIVE_data4, tidy=TRUE, dpi=50}
+```{r run_JIVE_data4, tidy=TRUE, dpi=30}
 #Run JIVE analysis for GROUP 4
 
 #Estimate JIVE ranks based on permutation testing (best validated)
