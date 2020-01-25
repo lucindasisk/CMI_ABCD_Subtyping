@@ -21,13 +21,13 @@ results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 # myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
 # thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 # corrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-# uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+# uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CMI_ABCD/ABCD_Metrics/final_data/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
 
 pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_clinicalvars.csv', col_names = TRUE)
 myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
 thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
 corrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
 
 ```
 
@@ -45,46 +45,79 @@ thick_data_clean <- thick_data %>%
   select_if(not_all_na) 
 
 #Add in group info
-merged_groups <- full_join(corrected_groups, uncorrected_groups)
+merged_group <- full_join(corrected_groups, uncorrected_groups, by='subid') 
 
 #Merge data frames to ensure they are in same order
-m1_cor <- left_join(corrected_groups, myelin_data_clean, by='subid')
+m1_cor <- left_join(merged_group, myelin_data_clean, by='subid')
 m2_cor <- full_join(m1_cor, thick_data_clean, by='subid')
 m3_cor <- full_join(m2_cor, pheno_data, by=c('subid'='Row'))
 brain_df <- m3_cor
 
 #Create groups
 
-group_1_brain <- brain_df %>% 
-  filter(Corrected_Group == 1) %>%
+group_1_brain_cor <- brain_df %>% 
+  filter(corrected_group == 1) %>%
   select("zmyelin_set1":"zthickness_set16383")
 
-group_2_brain <- brain_df %>% 
-  filter(Corrected_Group == 2) %>%
+group_1_brain_uncor <- brain_df %>% 
+  filter(uncorrected_group == 1) %>%
   select("zmyelin_set1":"zthickness_set16383")
 
-group_3_brain <- brain_df %>% 
-  filter(Corrected_Group == 3) %>%
+group_2_brain_cor <- brain_df %>% 
+  filter(corrected_group == 2) %>%
   select("zmyelin_set1":"zthickness_set16383")
 
-group_4_brain <- brain_df %>% 
-  filter(Corrected_Group == 4) %>%
+group_2_brain_uncor <- brain_df %>% 
+  filter(uncorrected_group == 2) %>%
   select("zmyelin_set1":"zthickness_set16383")
 
-group_1_pheno <- brain_df %>% 
-  filter(Corrected_Group == 1) %>%
+group_3_brain_cor <- brain_df %>% 
+  filter(corrected_group == 3) %>%
+  select("zmyelin_set1":"zthickness_set16383")
+
+group_3_brain_uncor <- brain_df %>% 
+  filter(uncorrected_group == 3) %>%
+  select("zmyelin_set1":"zthickness_set16383")
+
+group_4_brain_cor <- brain_df %>% 
+  filter(corrected_group == 4) %>%
+  select("zmyelin_set1":"zthickness_set16383")
+
+group_4_brain_uncor <- brain_df %>% 
+  filter(uncorrected_group == 4) %>%
+  select("zmyelin_set1":"zthickness_set16383")
+
+#Phenotypic Data
+group_1_pheno_cor <- brain_df %>% 
+  filter(corrected_group == 1) %>%
   select("meim_p_ss_exp1":"trauma_num1")
 
-group_2_pheno <- brain_df %>% 
-  filter(Corrected_Group == 2) %>%
+group_1_pheno_uncor <- brain_df %>% 
+  filter(uncorrected_group == 1) %>%
   select("meim_p_ss_exp1":"trauma_num1")
 
-group_3_pheno <- brain_df %>% 
-  filter(Corrected_Group == 3) %>%
+group_2_pheno_cor <- brain_df %>% 
+  filter(corrected_group == 2) %>%
   select("meim_p_ss_exp1":"trauma_num1")
 
-group_4_pheno <- brain_df %>% 
-  filter(Corrected_Group == 4) %>%
+group_2_pheno_uncor <- brain_df %>% 
+  filter(uncorrected_group == 2) %>%
+  select("meim_p_ss_exp1":"trauma_num1")
+
+group_3_pheno_cor <- brain_df %>% 
+  filter(corrected_group == 3) %>%
+  select("meim_p_ss_exp1":"trauma_num1")
+
+group_3_pheno_uncor <- brain_df %>% 
+  filter(uncorrected_group == 3) %>%
+  select("meim_p_ss_exp1":"trauma_num1")
+
+group_4_pheno_cor <- brain_df %>% 
+  filter(corrected_group == 4) %>%
+  select("meim_p_ss_exp1":"trauma_num1")
+
+group_4_pheno_uncor <- brain_df %>% 
+  filter(uncorrected_group == 4) %>%
   select("meim_p_ss_exp1":"trauma_num1")
 
 ```
@@ -93,17 +126,25 @@ group_4_pheno <- brain_df %>%
 ```{r assign_groups_transpose, tidy=TRUE}
 #Select subgroup information
 
-group_1_brain_mat <- t(group_1_brain)
-group_1_pheno_mat <- t(group_1_pheno)
+group_1_brain_mat_cor <- t(group_1_brain_cor)
+group_1_brain_mat_uncor <- t(group_1_brain_uncor)
+group_1_pheno_mat_cor <- t(group_1_pheno_cor)
+group_1_pheno_mat_uncor <- t(group_1_pheno_uncor)
 
-group_2_brain_mat <- t(group_2_brain)
-group_2_pheno_mat <- t(group_2_pheno)
+group_2_brain_mat_cor <- t(group_2_brain_cor)
+group_2_brain_mat_uncor <- t(group_2_brain_uncor)
+group_2_pheno_mat_cor <- t(group_2_pheno_cor)
+group_2_pheno_mat_uncor <- t(group_2_pheno_uncor)
 
-group_3_brain_mat <- t(group_3_brain)
-group_3_pheno_mat <- t(group_3_pheno)
+group_3_brain_mat_cor <- t(group_3_brain_cor)
+group_3_brain_mat_uncor <- t(group_3_brain_uncor)
+group_3_pheno_mat_cor <- t(group_3_pheno_cor)
+group_3_pheno_mat_uncor <- t(group_3_pheno_uncor)
 
-group_4_brain_mat <- t(group_4_brain)
-group_4_pheno_mat <- t(group_4_pheno)
+group_4_brain_mat_cor <- t(group_4_brain_cor)
+group_4_brain_mat_uncor <- t(group_4_brain_uncor)
+group_4_pheno_mat_cor <- t(group_4_pheno_cor)
+group_4_pheno_mat_uncor <- t(group_4_pheno_uncor)
 
 ```
 
@@ -113,13 +154,19 @@ group_4_pheno_mat <- t(group_4_pheno)
 ```{r create_data_lists, tidy=TRUE}
 #Combine measures into list
 
-data_1 <- list(group_1_pheno_mat, group_1_brain_mat)
-data_2 <- list(group_2_pheno_mat, group_2_brain_mat)
-data_3 <- list(group_3_pheno_mat, group_3_brain_mat)
-data_4 <- list(group_4_pheno_mat, group_4_brain_mat)
+data_1_cor <- list(group_1_pheno_mat_cor, group_1_brain_mat_cor)
+data_2_cor <- list(group_2_pheno_mat_cor, group_2_brain_mat_cor)
+data_3_cor <- list(group_3_pheno_mat_cor, group_3_brain_mat_cor)
+data_4_cor <- list(group_4_pheno_mat_cor, group_4_brain_mat_cor)
 
-all_data <- c(data_1, data_2, data_3, data_4)
+data_1_uncor <- list(group_1_pheno_mat_uncor, group_1_brain_mat_uncor)
+data_2_uncor <- list(group_2_pheno_mat_uncor, group_2_brain_mat_uncor)
+data_3_uncor <- list(group_3_pheno_mat_uncor, group_3_brain_mat_uncor)
+data_4_uncor <- list(group_4_pheno_mat_uncor, group_4_brain_mat_uncor)
+
 ```
+
+# JIVE with phenotypic data corrected for age and sex (as well as site)
 
 ```{r run_JIVE_data1, tidy=TRUE, dpi=30}
 #Run JIVE analysis for GROUP 1
@@ -127,7 +174,7 @@ all_data <- c(data_1, data_2, data_3, data_4)
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_1, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_1_cor, scale = FALSE)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -152,7 +199,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_2, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_2_cor, scale = FALSE)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -178,7 +225,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_3, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_3_cor, scale = FALSE)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -204,7 +251,113 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_4, scale = FALSE)))
+(try(cmi_jive_result <- jive(data_4_cor, scale = FALSE)))
+
+#Get Results
+result_joint_rank <- cmi_jive_result$rankJ
+result_individ_rank <- cmi_jive_result$rankA
+
+#Plot variance explained by individual and joint ranks, and noise
+(try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
+
+#Plot heatmaps of results
+(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+
+#Plot PCA 
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
+#No clustering efects apparent
+
+```
+
+### Group 4 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
+
+
+# JIVE with phenotypic data NOT corrected for age and sex (still corrected for site)
+
+```{r run_JIVE_data1, tidy=TRUE, dpi=30}
+#Run JIVE analysis for GROUP 1
+
+#Estimate JIVE ranks based on permutation testing (best validated)
+#Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
+#Compute ranks
+(try(cmi_jive_result <- jive(data_1_uncor, scale = FALSE)))
+
+#Get Results
+result_joint_rank <- cmi_jive_result$rankJ
+result_individ_rank <- cmi_jive_result$rankA
+
+#Plot variance explained by individual and joint ranks, and noise
+(try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
+
+#Plot heatmaps of results
+(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+
+#Plot PCA 
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
+#No clustering efects apparent
+
+```
+### Group 1 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
+
+```{r run_JIVE_data2, tidy=TRUE, dpi=30}
+#Run JIVE analysis for GROUP 2
+
+#Estimate JIVE ranks based on permutation testing (best validated)
+#Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
+#Compute ranks
+(try(cmi_jive_result <- jive(data_2_uncor, scale = FALSE)))
+
+#Get Results
+result_joint_rank <- cmi_jive_result$rankJ
+result_individ_rank <- cmi_jive_result$rankA
+
+#Plot variance explained by individual and joint ranks, and noise
+(try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
+
+#Plot heatmaps of results
+(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+
+#Plot PCA 
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
+#No clustering efects apparent
+
+```
+
+### Group 2 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
+
+```{r run_JIVE_data3, tidy=TRUE, dpi=30}
+#Run JIVE analysis for GROUP 3
+
+#Estimate JIVE ranks based on permutation testing (best validated)
+#Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
+#Compute ranks
+(try(cmi_jive_result <- jive(data_3_uncor, scale = FALSE)))
+
+#Get Results
+result_joint_rank <- cmi_jive_result$rankJ
+result_individ_rank <- cmi_jive_result$rankA
+
+#Plot variance explained by individual and joint ranks, and noise
+(try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
+
+#Plot heatmaps of results
+(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+
+#Plot PCA 
+try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
+#No clustering efects apparent
+
+```
+
+### Group 3 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
+
+```{r run_JIVE_data4, tidy=TRUE, dpi=30}
+#Run JIVE analysis for GROUP 4
+
+#Estimate JIVE ranks based on permutation testing (best validated)
+#Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
+#Compute ranks
+(try(cmi_jive_result <- jive(data_4_uncor, scale = FALSE)))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
