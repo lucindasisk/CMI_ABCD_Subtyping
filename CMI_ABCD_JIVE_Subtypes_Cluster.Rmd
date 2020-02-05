@@ -168,7 +168,7 @@ data_4_uncor <- list(group_4_pheno_mat_uncor, group_4_brain_mat_uncor)
 
 # JIVE with phenotypic data corrected for age and sex (as well as site)
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 1
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -184,7 +184,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -193,7 +193,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 ```
 ### Group 1 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 2
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -209,7 +209,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -219,7 +219,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 2 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 3
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -235,7 +235,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -245,7 +245,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 3 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 4
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -261,7 +261,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -274,7 +274,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 # JIVE with phenotypic data NOT corrected for age and sex (still corrected for site)
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 1
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -290,7 +290,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -299,7 +299,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 ```
 ### Group 1 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 2
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -315,7 +315,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -325,7 +325,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 2 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 3
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -341,7 +341,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -351,7 +351,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 
 ### Group 3 Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
 
-```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="30%"}
+```{r, tidy=TRUE, dpi=50, fig.retina=1, out.width="100%"}
 #Run JIVE analysis for GROUP 4
 
 #Estimate JIVE ranks based on permutation testing (best validated)
@@ -367,7 +367,7 @@ result_individ_rank <- cmi_jive_result$rankA
 (try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))))
 
 #Plot heatmaps of results
-(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
+#(try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE)))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
