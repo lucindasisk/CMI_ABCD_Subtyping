@@ -55,13 +55,19 @@ full_df <- m3
 
 #Create groups
 myelin <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")
+  select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")%>% 
+  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+  t()
   
 thick <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")
+  select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")%>% 
+  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+  t()
 
 pheno <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")
+  select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")%>% 
+  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+  t()
 
 ####
 #Separate into corrected/uncorrected groups
