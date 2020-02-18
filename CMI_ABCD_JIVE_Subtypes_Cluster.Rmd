@@ -220,7 +220,7 @@ data_4_uncor <- list(group_4_pheno_uncor, group_4_myelin_uncor, group_4_thick_un
 
 ## JIVE for all data
 
-```{r, tidy=TRUE}
+```{r run_JIVE_alldata, tidy=TRUE}
 #Run JIVE analysis for ALL DATA
 
 #Estimate JIVE ranks based on permutation testing (best validated)
