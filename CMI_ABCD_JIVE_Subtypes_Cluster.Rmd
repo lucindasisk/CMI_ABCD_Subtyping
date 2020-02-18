@@ -55,18 +55,24 @@ full_df <- m3
 
 #Create groups
 myelin <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")%>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
+  select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")
   
 thick <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")%>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
+  select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")
 
 pheno <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")%>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+  select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")
+
+myelin_mat <- myelin %>% 
+  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+  t()
+
+thick_mat <- thick %>% 
+  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+  t()
+
+pheno_mat <- pheno %>% 
+  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
   t()
 
 ####
@@ -204,7 +210,7 @@ group_4_pheno_uncor <- pheno %>%
 ```{r create_data_lists, tidy=TRUE}
 #Combine measures into list
 
-data <- list(pheno, myelin, thick)
+data <- list(pheno_mat, myelin_mat, thick_mat)
 data_1_uncor <- list(group_1_pheno_uncor, group_1_myelin_uncor, group_1_thick_uncor)
 data_2_uncor <- list(group_2_pheno_uncor, group_2_myelin_uncor, group_2_thick_uncor)
 data_3_uncor <- list(group_3_pheno_uncor, group_3_myelin_uncor, group_3_thick_uncor)
