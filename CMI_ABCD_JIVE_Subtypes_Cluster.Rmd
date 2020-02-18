@@ -17,17 +17,17 @@ results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
 #Read in JIVE data
 
-pheno_data <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
-myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
-corrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
+# pheno_data <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
+# myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+# thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+# corrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+# uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
 
-# pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
-# myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-# thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
-# corrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-# uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
+pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
+myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+corrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
 
 ```
 
