@@ -212,7 +212,7 @@ data_4_uncor <- list(group_4_pheno_uncor, group_4_myelin_uncor, group_4_thick_un
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data, scale = FALSE, conv="default", method='bic')))
+(try(cmi_jive_result <- jive(data, scale = TRUE, conv="default", method='bic')))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -239,7 +239,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_1_uncor, scale = FALSE, conv="default", method='bic')))
+(try(cmi_jive_result <- jive(data_1_uncor, scale = TRUE, conv="default", method='bic')))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -264,7 +264,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_2_uncor, scale = FALSE, conv="default", method='bic')))
+(try(cmi_jive_result <- jive(data_2_uncor, scale = TRUE, conv="default", method='bic')))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -290,7 +290,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_3_uncor, scale = FALSE, conv="default", method='bic')))
+(try(cmi_jive_result <- jive(data_3_uncor, scale = TRUE, conv="default", method='bic')))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
@@ -316,7 +316,7 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 #Estimate JIVE ranks based on permutation testing (best validated)
 #Row-orthogonality enforced between the joint and individual estimates and also between each individual estimate.
 #Compute ranks
-(try(cmi_jive_result <- jive(data_4_uncor, scale = FALSE, conv="default", method='bic')))
+(try(cmi_jive_result <- jive(data_4_uncor, scale = TRUE, conv="default", method='bic')))
 
 #Get Results
 result_joint_rank <- cmi_jive_result$rankJ
