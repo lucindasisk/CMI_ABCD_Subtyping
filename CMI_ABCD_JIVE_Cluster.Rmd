@@ -17,17 +17,21 @@ results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
 #Read in JIVE data
 
-# pheno_data <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
-# myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-# thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
-# corrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-# uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
+pheno_data <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
 
-  pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
-  myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
-  thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
-  corrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
-  uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
+myelin_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+
+thick_data <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+
+corrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+
+uncorrected_groups <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Results/ABCD_metrics/final_data/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
+
+  # pheno_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/LS_PhenoData_Sample1_2.13.19.csv', col_names = TRUE)
+  # myelin_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_myelin.csv', col_names = TRUE)
+  # thick_data <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/CMI_ABCD_Sample1_thickness.csv', col_names=TRUE)
+  # corrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_with_statistical_correction_for_pheno.csv', col_names=TRUE)
+  # uncorrected_groups <- read_csv('/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/SNF_subtyping_result_without_statistical_correction_for_pheno.csv', col_names=TRUE)
 
 ```
 
@@ -35,6 +39,10 @@ results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/Results'
 
 ```{r clean_data, tidy=TRUE}
 not_all_na <- function(x) any(!is.na(x))
+
+#Set local vars to speed computaitons
+thick_data <- thick_data[1:50]
+myelin_data <- myelin_data[1:50]
 
 #Drop ID columns; drop all columns that sum to 0
 myelin_data_clean <- myelin_data %>%
@@ -53,153 +61,175 @@ m2 <- left_join(m1, thick_data_clean, by='subid')
 m3 <- left_join(m2, pheno_data, by=c('subid'='subjectkey'))
 full_df <- m3
 
-#Create groups
+#DFs with no group info
 myelin <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")
-  
+  dplyr::select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set48")
+
 thick <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")
+   dplyr::select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set49")
 
 pheno <- full_df %>% 
-  select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")
+   dplyr::select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")\
 
 myelin_mat <- myelin %>% 
-  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+  dplyr::select(-c("subid","uncorrected_group", "corrected_group")) %>%
   t()
 
-thick_mat <- thick %>% 
-  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+thick_mat <- thick %>%
+  dplyr::select(-c("subid","uncorrected_group", "corrected_group")) %>%
   t()
 
-pheno_mat <- pheno %>% 
-  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+pheno_mat <- pheno %>%
+  dplyr::select(-c("subid","uncorrected_group", "corrected_group")) %>%
   t()
+  
+# #Create groups
+# myelin <- full_df %>% 
+#   select("subid","uncorrected_group", "corrected_group","zmyelin_set1":"zmyelin_set16383")
+#   
+# thick <- full_df %>% 
+#   select("subid","uncorrected_group", "corrected_group","zthickness_set1":"zthickness_set16383")
+# 
+# pheno <- full_df %>% 
+#   select("subid","uncorrected_group", "corrected_group","physical_abuse_sum":"fes_p_ss_fc")
+# 
+# myelin_mat <- myelin %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+#   t()
+# 
+# thick_mat <- thick %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+#   t()
+# 
+# pheno_mat <- pheno %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+#   t()
 
 ####
 #Separate into corrected/uncorrected groups
 
-group_1_myelin_cor <- myelin %>% 
-  filter(corrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
+# group_1_myelin_cor <- myelin %>% 
+#   filter(corrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_1_myelin_uncor <- myelin %>% 
+#   filter(uncorrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_1_thick_cor <- thick %>% 
+#   filter(corrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_1_thick_uncor <- thick %>% 
+#   filter(uncorrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_myelin_cor <- myelin %>% 
+#   filter(corrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_myelin_uncor <- myelin %>% 
+#   filter(uncorrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_thick_cor <- thick %>% 
+#   filter(corrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_thick_uncor <- thick %>% 
+#   filter(uncorrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_myelin_cor <- myelin %>% 
+#   filter(corrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_myelin_uncor <- myelin %>% 
+#   filter(uncorrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_thick_cor <- thick %>% 
+#   filter(corrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_thick_uncor <- thick %>% 
+#   filter(uncorrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_myelin_cor <- myelin %>% 
+#   filter(corrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_myelin_uncor <- myelin %>% 
+#   filter(uncorrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_thick_cor <- thick %>% 
+#   filter(corrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_thick_uncor <- thick %>% 
+#   filter(uncorrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
 
-group_1_myelin_uncor <- myelin %>% 
-  filter(uncorrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_1_thick_cor <- thick %>% 
-  filter(corrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_1_thick_uncor <- thick %>% 
-  filter(uncorrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_myelin_cor <- myelin %>% 
-  filter(corrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_myelin_uncor <- myelin %>% 
-  filter(uncorrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_thick_cor <- thick %>% 
-  filter(corrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_thick_uncor <- thick %>% 
-  filter(uncorrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_myelin_cor <- myelin %>% 
-  filter(corrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_myelin_uncor <- myelin %>% 
-  filter(uncorrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_thick_cor <- thick %>% 
-  filter(corrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_thick_uncor <- thick %>% 
-  filter(uncorrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_myelin_cor <- myelin %>% 
-  filter(corrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_myelin_uncor <- myelin %>% 
-  filter(uncorrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_thick_cor <- thick %>% 
-  filter(corrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_thick_uncor <- thick %>% 
-  filter(uncorrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-
-#Phenotypic Data
-group_1_pheno_cor <- pheno %>% 
-  filter(corrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_1_pheno_uncor <- pheno %>% 
-  filter(uncorrected_group == 1) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_pheno_cor <- pheno %>% 
-  filter(corrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_2_pheno_uncor <- pheno %>% 
-  filter(uncorrected_group == 2) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_pheno_cor <- pheno %>% 
-  filter(corrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_3_pheno_uncor <- pheno %>% 
-  filter(uncorrected_group == 3) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_pheno_cor <- pheno %>% 
-  filter(corrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group"))%>% 
-  t()
-
-group_4_pheno_uncor <- pheno %>% 
-  filter(uncorrected_group == 4) %>% 
-  select(-c("subid","uncorrected_group", "corrected_group")) %>% 
-  t()
-
+# #Phenotypic Data
+# group_1_pheno_cor <- pheno %>% 
+#   filter(corrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_1_pheno_uncor <- pheno %>% 
+#   filter(uncorrected_group == 1) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_pheno_cor <- pheno %>% 
+#   filter(corrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_2_pheno_uncor <- pheno %>% 
+#   filter(uncorrected_group == 2) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_pheno_cor <- pheno %>% 
+#   filter(corrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_3_pheno_uncor <- pheno %>% 
+#   filter(uncorrected_group == 3) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_pheno_cor <- pheno %>% 
+#   filter(corrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group"))%>% 
+#   t()
+# 
+# group_4_pheno_uncor <- pheno %>% 
+#   filter(uncorrected_group == 4) %>% 
+#   select(-c("subid","uncorrected_group", "corrected_group")) %>% 
+#   t()
+# 
 
 ```
 
@@ -211,10 +241,10 @@ group_4_pheno_uncor <- pheno %>%
 #Combine measures into list
 
 data <- list(pheno_mat, myelin_mat, thick_mat)
-data_1_uncor <- list(group_1_pheno_uncor, group_1_myelin_uncor, group_1_thick_uncor)
-data_2_uncor <- list(group_2_pheno_uncor, group_2_myelin_uncor, group_2_thick_uncor)
-data_3_uncor <- list(group_3_pheno_uncor, group_3_myelin_uncor, group_3_thick_uncor)
-data_4_uncor <- list(group_4_pheno_uncor, group_4_myelin_uncor, group_4_thick_uncor)
+# data_1_uncor <- list(group_1_pheno_uncor, group_1_myelin_uncor, group_1_thick_uncor)
+# data_2_uncor <- list(group_2_pheno_uncor, group_2_myelin_uncor, group_2_thick_uncor)
+# data_3_uncor <- list(group_3_pheno_uncor, group_3_myelin_uncor, group_3_thick_uncor)
+# data_4_uncor <- list(group_4_pheno_uncor, group_4_myelin_uncor, group_4_thick_uncor)
 
 ```
 
@@ -236,7 +266,7 @@ result_individ_rank <- cmi_jive_result$rankA
 try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
 #Plot heatmaps of results
-try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE))
+#try(cmi_jive_heatmaps <- showHeatmaps(cmi_jive_result, order_by = 0, show_all = TRUE))
 
 #Plot PCA 
 try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indiv = c(1,1), Colors = c("#811c4e", "#fdb663")))
@@ -245,3 +275,11 @@ try(cmi_jive_pca <- showPCA(cmi_jive_result, n_joint = result_joint_rank, n_indi
 ```
 
 ### All Data Results: Joint `r result_joint_rank`, Individual `r result_individ_rank`
+
+```{r cluster_rank, tidy=TRUE}
+
+#cmi_jive_result$individual
+
+
+```
+
