@@ -116,7 +116,7 @@ repl_k5_thick <- left_join(repl_k5, thick_data, by = c('subid'='subjectid'))
 
 ## Set group info for Discovery Data, K=2
 
-```{r run_jive_disc_k2, tidy=TRUE}
+```{r, tidy=TRUE}
 
 #Discovery, K=2
 #Set Group 1
@@ -182,7 +182,7 @@ try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb66
 
 ## Set Group Info for Replication Data, K=2
 
-```{r run_jive_repl_k2, tidy=TRUE}
+```{r, tidy=TRUE}
 
 #Replication, K=2
 #Set Group 1
@@ -247,7 +247,7 @@ try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb66
 
 ## Set Group Info for Discovery Data, K=5
 
-```{r run_jive_disc_k2, tidy=TRUE}
+```{r, tidy=TRUE}
 
 #Discovery, K=2
 #Set Group 1
@@ -407,7 +407,7 @@ try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb66
 
 ## Set Group Info for Replication Data, K=5
 
-```{r run_jive_disc_k2, tidy=TRUE}
+```{r, tidy=TRUE}
 
 #Replication, K=5
 #Set Group 1
