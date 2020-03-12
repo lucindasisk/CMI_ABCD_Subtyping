@@ -1,23 +1,26 @@
 ---
 title: "Get_ABCD_CMI_Pheno_Data"
 author: "Lucinda Sisk"
-date: "2/11/2020"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, conflict_prefer("select", "dplyr"), conflict_prefer("filter", "dplyr")}
 library(tidyverse)
 library(dplyr)
 library(hablar)
+library(eqs2lavaan)
 ```
 
 ```{r, tidy=TRUE}
 
-sample1 <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample1_IDs.csv') 
-sample2 <- read_csv('/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample2_IDs.csv')
+sample1 <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample1_IDs.csv') 
+sample2 <- read_csv('/Users/lucindasisk/Box/LS_Folders//CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample2_IDs.csv')
 
 samples <- rbind(sample1, sample2) %>% 
     arrange(subjectkey)
+
+release <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Files/subs_release_idx.csv', col_names=TRUE)
 
 abcd_ptsd <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/abcd_ptsd01.txt') %>% 
     mutate("subjectkey" = str_remove(subjectkey, "_")) %>% 
@@ -55,10 +58,16 @@ ce_sumscores_p <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/abc
     inner_join(samples, by="subjectkey") %>% 
     arrange(subjectkey)
 
+cbclscores_y <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/abcd_cbcls01.txt') %>% 
+    mutate("subjectkey" = str_remove(subjectkey, "_")) %>% 
+    filter(eventname == "baseline_year_1_arm_1") %>% 
+    inner_join(samples, by="subjectkey") %>% 
+    arrange(subjectkey)
+
 ```
 
 ```{r, tidy=TRUE}
-
+#Physical Abuse code
 phys_ab <- abcd_ptsd %>% 
     select("subjectkey", "ksads_ptsd_raw_761_p","ksads_ptsd_raw_762_p","ksads_ptsd_raw_763_p") %>% 
     type_convert(col_types = cols(ksads_ptsd_raw_761_p ="i",
@@ -66,8 +75,8 @@ phys_ab <- abcd_ptsd %>%
                                   ksads_ptsd_raw_763_p = "i")) %>% 
     mutate(physical_abuse_sum = rowSums(.[2:4])) %>% 
     select("subjectkey", "physical_abuse_sum")
-    #mutate(physical_abuse_bin = recode(physical_abuse, "2" = "1", "3" = "1")) #Recode sums to binary score (max 5 score)
-    
+
+#Sexual Abyse code 
 sex_ab <- abcd_ptsd %>% 
     select("subjectkey", "ksads_ptsd_raw_767_p","ksads_ptsd_raw_768_p", "ksads_ptsd_raw_769_p") %>% 
     type_convert(col_types = cols(ksads_ptsd_raw_767_p ="i",
@@ -75,14 +84,8 @@ sex_ab <- abcd_ptsd %>%
                                   ksads_ptsd_raw_769_p = "i")) %>% 
     mutate(sexual_abuse_sum = rowSums(.[2:4])) %>% 
     select("subjectkey", "sexual_abuse_sum")
-    #mutate(sexual_abuse_bin = recode(sexual_abuse, "2" = "1", "3" = "1")) #Recode sums to binary score (max 5 score)
 
-# dom_violence <- abcd_ptsd %>% 
-#     select("subjectkey", "ksads_ptsd_raw_766_p") %>% 
-#     type_convert(col_types = cols(ksads_ptsd_raw_767_p ="i")) %>% 
-#     rename(domestic_violence_sum = "ksads_ptsd_raw_766_p") %>% 
-#     select("subjectkey", "domestic_violence_sum")
-
+#Exposure to violence code
 exp_violence <- abcd_ptsd %>% 
     select("subjectkey", "ksads_ptsd_raw_758_p", "ksads_ptsd_raw_759_p", "ksads_ptsd_raw_760_p", "ksads_ptsd_raw_764_p", "ksads_ptsd_raw_765_p") %>% 
     type_convert(col_types = cols(ksads_ptsd_raw_758_p = "i",
@@ -92,9 +95,8 @@ exp_violence <- abcd_ptsd %>%
                                   ksads_ptsd_raw_765_p ="i")) %>% 
     mutate(exposure_violence_sum = rowSums(.[2:6])) %>% 
     select("subjectkey", "exposure_violence_sum")
-    #mutate(exposure_violence_bin = recode(exposure_violence, "2" = "1", "3" = "1", "4" = "1", "5" = "1")) #Recode sums to binary score (max 5 score)
-                     
-    
+
+# Trauma codes
 trauma_other <- abcd_ptsd %>% 
     select("subjectkey", "ksads_ptsd_raw_754_p","ksads_ptsd_raw_755_p", "ksads_ptsd_raw_756_p", "ksads_ptsd_raw_757_p", "ksads_ptsd_raw_766_p", "ksads_ptsd_raw_770_p") %>% 
     type_convert(col_types = cols(ksads_ptsd_raw_754_p ="i",
@@ -105,38 +107,66 @@ trauma_other <- abcd_ptsd %>%
                                   ksads_ptsd_raw_770_p = "i")) %>% 
     mutate(trauma_other_sum = rowSums(.[2:7])) %>% 
     select("subjectkey", "trauma_other_sum")
-    #mutate(trauma_other_bin = recode(trauma_other, "2" = "1", "3" = "1", "4" = "1", "5" = "1")) #Recode sums to binary score (max 5 score)
 
-# divorce <- demo %>%  #### Binary variable - not including
-#     select("subjectkey", "demo_prnt_marital_v2") %>% 
-#     mutate(marital_div_sep = recode(demo_prnt_marital_v2, "2" = "1", "3" = "1", "4" = "1", "1" = "0", "5" = "0", "6" = "0")) %>% 
-#     # 12= Widowed, 3 = Divorced, 4 = Separated; convert all to "1"
-#     dplyr::na_if("777") %>% 
-#     select("subjectkey", "marital_div_sep")
+#All Trauma data (Trauma_num)
+#Score abcd trauma data
+trauma_all <- abcd_ptsd %>%
+  #Select columns of interest
+  select(subjectkey, ksads_ptsd_raw_754_p:ksads_ptsd_raw_770_p) %>%
+  #Convert score columns to numeric type for summing
+  type_convert(col_types = cols(ksads_ptsd_raw_754_p ="i",
+                                ksads_ptsd_raw_755_p ="i",
+                                ksads_ptsd_raw_756_p ="i",
+                                ksads_ptsd_raw_757_p ="i",
+                                ksads_ptsd_raw_758_p ="i",
+                                ksads_ptsd_raw_759_p ="i",
+                                ksads_ptsd_raw_760_p ="i",
+                                ksads_ptsd_raw_761_p ="i",
+                                ksads_ptsd_raw_762_p ="i",
+                                ksads_ptsd_raw_763_p ="i",
+                                ksads_ptsd_raw_764_p ="i",
+                                ksads_ptsd_raw_765_p ="i",
+                                ksads_ptsd_raw_766_p ="i",
+                                ksads_ptsd_raw_767_p ="i",
+                                ksads_ptsd_raw_768_p ="i",
+                                ksads_ptsd_raw_769_p ="i",
+                                ksads_ptsd_raw_770_p  = "i")) %>%
+  #Create summed scores of trauma exposures
+  mutate(trauma_num = rowSums(.[2:18])) %>%
+  select('subjectkey', 'trauma_num') 
 
+#CRPBI code
 crpbi_parent_mean <- ce_sumscores_y %>% #Acceptance Subscale, Youth Report Mean (on parent)
     select("subjectkey", "crpbi_y_ss_parent")
 
 crpbi_caregiver_mean <- ce_sumscores_y %>% #Acceptance Subscale, Youth Report Mean (on secondary caregiver)
     select("subjectkey", "crpbi_y_ss_caregiver")
-    
+
+#PMQ    
 pmq_mean <- ce_sumscores_y %>% #Parental Monitoring: Youth Report Mean
     select("subjectkey", "pmq_y_ss_mean")
 
+#School environment
 school_environment <- ce_sumscores_y %>% #SRPF School Environment Subscale, Sum (youth report)
     select("subjectkey", "srpf_y_ss_ses")
 
-# discrim <- ce_sumscores_y %>% #Perceived discrimination measure (youth report)
-#     select("subjectkey", "dim_y_ss_mean")
-
+#neighborhood safety
 nb_safety <- ce_sumscores_p %>% #Perceived discrimination measure (youth report)
     select("subjectkey", "nsc_p_ss_mean_3_items")
 
+#Family conflict parent report
 fam_conflict_parent <- ce_sumscores_p %>% #Perceived discrimination measure (youth report)
     select("subjectkey", "fes_p_ss_fc")
 
-# fam_conflict_youth <- ce_sumscores_y %>% #Perceived discrimination measure (youth report)
-#     select("subjectkey","fes_y_ss_fc")
+## Get CBCL T scores
+cbcl_int <- cbclscores_y %>% 
+    select("subjectkey", "cbcl_scr_syn_internal_t") #Internalizing Tscore from CBCL
+
+cbcl_ext <- cbclscores_y %>% 
+    select("subjectkey", "cbcl_scr_syn_external_t") #Externalizing Tscore from CBCL
+
+cbcl_totprob <- cbclscores_y %>% 
+    select("subjectkey", "cbcl_scr_syn_totprob_t") #Total Problems Tscore from CBCL
 
 
 ```
@@ -264,55 +294,107 @@ suicide_fh <- fha2 %>%
     mutate(suicide_sum = rowSums(.[2:13], na.rm=TRUE)) %>% 
     select("subjectkey", "suicide_sum")
 
+
+#Sum FH scores for Criminal behavior, family mental health, substance abuse
+
+#Criminal behavior
+criminal_fh <- crim_fh
+
+#Family mental health
+mentalhealth_fh <- full_join(depression_fh, mania_fh) %>%
+                                 full_join(suicide_fh) %>% 
+                                 full_join(schiz_fh) %>% 
+                                 full_join(anx_fh) %>% 
+                                 mutate(mentalhealth_sum = rowSums(.[2:6])) %>% 
+                                 select("subjectkey","mentalhealth_sum")
+
+#Substance abuse    
 substance_fh <- full_join(alc_prob, drug_prob) %>% 
     mutate(substance_sum = rowSums(.[2:3])) %>% 
     select("subjectkey","substance_sum")
 
-m1 <- full_join(depression_fh, mania_fh)
-m2 <- full_join(schiz_fh, anx_fh)
-criminal_fh <- crim_fh
+```
+```{r, tidy=TRUE}
+#Sum all family history to reduce sparsity
 
-mentalhealth_fh <- full_join(m1, m2) %>%
-    full_join(suicide_fh) %>% 
-    mutate(mentalhealth_sum = rowSums(.[2:6])) %>% 
-    select("subjectkey","mentalhealth_sum")
+fam_hist <- full_join(mentalhealth_fh, criminal_fh, by="subjectkey") %>% 
+    full_join(substance_fh, by="subjectkey") %>% 
+    mutate(fam_hist = rowSums(.[2:4], na.rm=TRUE)) %>% 
+    select("subjectkey", "fam_hist")
+
 
 ```
 
 
 ```{r, tidy=TRUE}
 # Create final data frame
-final_join <- full_join(phys_ab, sex_ab, by="subjectkey") %>% 
+final_join <- full_join(release, crpbi_parent_mean, by=c("subjectkey")) %>% 
+    full_join(crpbi_caregiver_mean, by="subjectkey") %>% 
+    full_join(phys_ab, by="subjectkey") %>% 
+    full_join(sex_ab, by="subjectkey") %>% 
     full_join(exp_violence, by="subjectkey") %>% 
     full_join(trauma_other, by="subjectkey") %>% 
+    full_join(trauma_all, by='subjectkey') %>% 
     full_join(mentalhealth_fh, by="subjectkey") %>% 
     full_join(substance_fh, by="subjectkey") %>% 
     full_join(criminal_fh, by="subjectkey") %>% 
-    full_join(crpbi_parent_mean, by="subjectkey") %>% 
-    full_join(crpbi_caregiver_mean, by="subjectkey") %>% 
+    full_join(fam_hist, by="subjectkey") %>% 
     full_join(pmq_mean, by="subjectkey") %>% 
     full_join(school_environment, by="subjectkey") %>% 
     full_join(nb_safety, by="subjectkey") %>% 
     full_join(fam_conflict_parent, by="subjectkey") %>% 
+    full_join(cbcl_int, by="subjectkey") %>% 
+    full_join(cbcl_ext, by="subjectkey") %>% 
+    full_join(cbcl_totprob, by="subjectkey") %>% 
     mutate("subjectkey" = str_remove(subjectkey, "_"))
 
 
-final_sample_1 <- merge(sample1, final_join, all.x=TRUE, all.y=FALSE)
-final_sample_2 <- inner_join(sample2, final_join)
+# final_sample_1 <- merge(sample1, final_join, all.x=TRUE, all.y=FALSE)
+# final_sample_2 <- inner_join(sample2, final_join)
+
+#Rename to relevant sample (CHECK THIS TO MAKE SURE RIGHT VARS ARE INCLUDED)
+# final_sample_all_vars <- final_join
+# final_sample_summed_trauma_all <- final_join
+# final_sample_summed_trauma_fh_all <- final_join
 
 ```
 
 ```{r, tidy=TRUE}
+#Write data to CSV
 
-write_csv(final_sample_1, '/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample1_2.13.19.csv')
-write_csv(final_sample_2, '/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample2_2.13.19.csv')
+# write_csv(final_sample_all_vars, '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_allVars_allIDs_2.29.20.csv')
+
+# write_csv(final_sample_2, '/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample2_2.24.19.csv')
+```
+
+```{r, tidy-TRUE}
+library(corrr)
+par(mar=c(7,4,4,2)+1) 
+
+#Drop subid column and convert to numeric type
+final_join_mat <- final_join %>% 
+    select(-c(subjectkey)) %>% 
+    sapply(as.numeric)
+
+#Create covariance matrix
+col = c("#cd071e", "#FF0000", "#8cc6e0")
+par(mar=c(7,4,4,2)+0.1) 
+png(filename='/Users/lucindasisk/Desktop/Covariance_Plot.png', width=800, height=750)
+heatmap(cov_mat, symm=TRUE, revC=TRUE, keep.dendro = FALSE, cexRow=1,cexCol=1,margins=c(12,8))
+graphics.off()
+
 ```
 
 ```{r, tidy=TRUE}
+library(corrplot)
 
-f <- abcd_ptsd %>% 
-    select(subjectkey, gender) %>% 
-    right_join(sample1) %>% 
-    filter(gender == "F")
+#Create correlation matrix from final join matrix
+corr_mat <- cor(final_join_mat) 
+
+par(mar=c(7,4,4,2)+0.1)
+png(filename='/Users/lucindasisk/Desktop/Correlation_Plot.png', width=800, height=750)
+corrplot(corr_mat)
+graphics.off()
 
 ```
+
