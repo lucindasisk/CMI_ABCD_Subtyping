@@ -185,456 +185,468 @@ try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb66
 
 ```
 
-<!-- ## Set group info for Discovery Data, K=2 -->
+## Set group info for Discovery Data, K=2
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- #Discovery, K=2 -->
-<!-- #Set Group 1 -->
-<!-- group1_pheno <-  disc_k2_pheno %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   sapply(as.numeric) %>%  -->
-<!--   t() -->
+#Discovery, K=2
+#Set Group 1
+group1_pheno <-  disc_k2_pheno %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- group1_myelin <- disc_k2_myelin %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group1_myelin <- disc_k2_myelin %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_thick <- disc_k2_thick %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group1_thick <- disc_k2_thick %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_data <- list(group1_pheno, group1_myelin, group1_thick)   -->
+group1_data <- list(group1_pheno, group1_myelin, group1_thick)
 
-<!-- #Set Group 2 -->
-<!-- group2_pheno <- disc_k2_pheno %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>% -->
-<!--   sapply(as.numeric) %>%  -->
-<!--   t() -->
+#Set Group 2
+group2_pheno <- disc_k2_pheno %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- group2_myelin <- disc_k2_myelin %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_myelin <- disc_k2_myelin %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_thick <- disc_k2_thick %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_thick <- disc_k2_thick %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_data <- list(group2_pheno, group2_myelin, group2_thick)   -->
+group2_data <- list(group2_pheno, group2_myelin, group2_thick)
 
-<!-- ``` -->
+```
 
-<!-- ### Run JIVE for Discovery Data, K=2, Group 1 -->
+### Run JIVE for Discovery Data, K=2, Group 1
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- ## RUN JIVE for Group 1 -->
-<!-- try(cmi_jive_result <- jive(group1_data, conv="default", method='perm')) -->
+## RUN JIVE for Group 1
+try(cmi_jive_result <- jive(group1_data, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- ``` -->
+```
 
-<!-- ### Run JIVE for Discovery Data, K=2, Group 2 -->
+### Run JIVE for Discovery Data, K=2, Group 2
 
-<!-- ```{r, tidy=TRUE} -->
-<!-- ## RUN JIVE for Group 2 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+```{r, tidy=TRUE}
+## RUN JIVE for Group 2
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- ``` -->
+```
 
-<!-- ## Set Group Info for Replication Data, K=2 -->
+## Set Group Info for Replication Data, K=2
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- #Replication, K=2 -->
-<!-- #Set Group 1 -->
-<!-- group1_pheno <- repl_k2_pheno %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#Replication, K=2
+#Set Group 1
+group1_pheno <- repl_k2_pheno %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- group1_myelin <- repl_k2_myelin %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group1_myelin <- repl_k2_myelin %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_thick <- repl_k2_thick %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group1_thick <- repl_k2_thick %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_data <- list(group1_pheno, group1_myelin, group1_thick)   -->
+group1_data <- list(group1_pheno, group1_myelin, group1_thick)
 
-<!-- #Set Group 2 -->
-<!-- group2_pheno <- repl_k2_pheno %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#Set Group 2
+group2_pheno <- repl_k2_pheno %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- group2_myelin <- repl_k2_myelin %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_myelin <- repl_k2_myelin %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_thick <- repl_k2_thick %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_thick <- repl_k2_thick %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_data <- list(group2_pheno, group2_myelin, group2_thick)   -->
+group2_data <- list(group2_pheno, group2_myelin, group2_thick)
 
-<!-- ``` -->
+```
 
-<!-- ### Run JIVE for Replication Data, K=2, Group 1 -->
+### Run JIVE for Replication Data, K=2, Group 1
 
-<!-- ```{r, tidy=TRUE} -->
-<!-- ## RUN JIVE for Group 1 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+```{r, tidy=TRUE}
+## RUN JIVE for Group 1
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
+
+```
 
-<!-- ``` -->
+### Run JIVE for Replication Data, K=2, Group 2
+```{r, tidy=TRUE}
+
+## RUN JIVE for Group 2
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
+
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
+
+```
+
+## Set Group Info for Discovery Data, K=5
 
-<!-- ### Run JIVE for Replication Data, K=2, Group 2 -->
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- ## RUN JIVE for Group 2 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+#Discovery, K=2
+#Set Group 1
+group1_pheno <- disc_k5_pheno %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+group1_myelin <- disc_k5_myelin %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- ``` -->
+group1_thick <- disc_k5_thick %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- ## Set Group Info for Discovery Data, K=5 -->
+group1_data <- list(group1_pheno, group1_myelin, group1_thick)
 
-<!-- ```{r, tidy=TRUE} -->
+#Set Group 2
+group2_pheno <- disc_k5_pheno %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- #Discovery, K=2 -->
-<!-- #Set Group 1 -->
-<!-- group1_pheno <- disc_k5_pheno %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_myelin <- disc_k5_myelin %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_myelin <- disc_k5_myelin %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_thick <- disc_k5_thick %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_thick <- disc_k5_thick %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_data <- list(group2_pheno, group2_myelin, group2_thick)
 
-<!-- group1_data <- list(group1_pheno, group1_myelin, group1_thick)   -->
+#Set Group 3
+group3_pheno <- disc_k5_pheno %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- #Set Group 2 -->
-<!-- group2_pheno <- disc_k5_pheno %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_myelin <- disc_k5_myelin %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_myelin <- disc_k5_myelin %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_thick <- disc_k5_thick %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_thick <- disc_k5_thick %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_data <- list(group3_pheno, group3_myelin, group3_thick)
 
-<!-- group2_data <- list(group2_pheno, group2_myelin, group2_thick)   -->
+#Set Group 4
+group4_pheno <- disc_k5_pheno %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>%
+  t()
 
-<!-- #Set Group 3 -->
-<!-- group3_pheno <- disc_k5_pheno %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_myelin <- disc_k5_myelin %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group3_myelin <- disc_k5_myelin %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_thick <- disc_k5_thick %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group3_thick <- disc_k5_thick %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_data <- list(group4_pheno, group4_myelin, group4_thick)
 
-<!-- group3_data <- list(group3_pheno, group3_myelin, group3_thick)   -->
+#Set Group 5
+group5_pheno <- disc_k5_pheno %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Set Group 4 -->
-<!-- group4_pheno <- disc_k5_pheno %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_myelin <- disc_k5_myelin %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group4_myelin <- disc_k5_myelin %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_thick <- disc_k5_thick %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group4_thick <- disc_k5_thick %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_data <- list(group5_pheno, group5_myelin, group5_thick)
+```
 
-<!-- group4_data <- list(group4_pheno, group4_myelin, group4_thick)   -->
+### Run JIVE for Discovery Data, K=5, Group 1
 
-<!-- #Set Group 5 -->
-<!-- group5_pheno <- disc_k5_pheno %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+```{r, tidy=TRUE}
 
-<!-- group5_myelin <- disc_k5_myelin %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#################################
+## RUN JIVE for Group 1
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- group5_thick <- disc_k5_thick %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- group5_data <- list(group5_pheno, group5_myelin, group5_thick)   -->
-<!-- ``` -->
+```
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 1 -->
+### Run JIVE for Discovery Data, K=5, Group 2
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
+#################################
+## RUN JIVE for Group 2
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- ################################# -->
-<!-- ## RUN JIVE for Group 1 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#################################
+```
 
-<!-- ``` -->
+### Run JIVE for Discovery Data, K=5, Group 3
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 2 -->
+```{r, tidy=TRUE}
 
-<!-- ```{r, tidy=TRUE} -->
-<!-- ################################# -->
-<!-- ## RUN JIVE for Group 2 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+## RUN JIVE for Group 3
+try(cmi_jive_result <- jive(group3_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- ################################# -->
-<!-- ``` -->
+#################################
+```
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 3 -->
+### Run JIVE for Discovery Data, K=5, Group 4
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- ## RUN JIVE for Group 3 -->
-<!-- try(cmi_jive_result <- jive(group3_data, scale = TRUE, conv="default", method='perm')) -->
+## RUN JIVE for Group 4
+try(cmi_jive_result <- jive(group4_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
+#################################
+```
 
-<!-- ################################# -->
-<!-- ``` -->
+### Run JIVE for Discovery Data, K=5, Group 5
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 4 -->
+```{r, tidy=TRUE}
 
-<!-- ```{r, tidy=TRUE} -->
+## RUN JIVE for Group 5
+try(cmi_jive_result <- jive(group5_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- ## RUN JIVE for Group 4 -->
-<!-- try(cmi_jive_result <- jive(group4_data, scale = TRUE, conv="default", method='perm')) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
-<!-- ################################# -->
-<!-- ``` -->
+#################################
+```
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 5 -->
+## Set Group Info for Replication Data, K=5
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- ## RUN JIVE for Group 5 -->
-<!-- try(cmi_jive_result <- jive(group5_data, scale = TRUE, conv="default", method='perm')) -->
+#Replication, K=5
+#Set Group 1
+group1_pheno <- repl_k5_pheno %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+group1_myelin <- repl_k5_myelin %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- ################################# -->
-<!-- ``` -->
+group1_thick <- repl_k5_thick %>%
+  filter(group == 1) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- ## Set Group Info for Replication Data, K=5 -->
+group1_data <- list(group1_pheno, group1_myelin, group1_thick)
 
-<!-- ```{r, tidy=TRUE} -->
+#Set Group 2
+group2_pheno <- repl_k5_pheno %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Replication, K=5 -->
-<!-- #Set Group 1 -->
-<!-- group1_pheno <- repl_k5_pheno %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_myelin <- repl_k5_myelin %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_myelin <- repl_k5_myelin %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_thick <- repl_k5_thick %>%
+  filter(group == 2) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group1_thick <- repl_k5_thick %>%  -->
-<!--   filter(group == 1) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group2_data <- list(group2_pheno, group2_myelin, group2_thick)
 
-<!-- group1_data <- list(group1_pheno, group1_myelin, group1_thick)   -->
+#Set Group 3
+group3_pheno <- repl_k5_pheno %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Set Group 2 -->
-<!-- group2_pheno <- repl_k5_pheno %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_myelin <- repl_k5_myelin %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_myelin <- repl_k5_myelin %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_thick <- repl_k5_thick %>%
+  filter(group == 3) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group2_thick <- repl_k5_thick %>%  -->
-<!--   filter(group == 2) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group3_data <- list(group3_pheno, group3_myelin, group3_thick)
 
-<!-- group2_data <- list(group2_pheno, group2_myelin, group2_thick)   -->
+#Set Group 4
+group4_pheno <- repl_k5_pheno %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Set Group 3 -->
-<!-- group3_pheno <- repl_k5_pheno %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_myelin <- repl_k5_myelin %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group3_myelin <- repl_k5_myelin %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_thick <- repl_k5_thick %>%
+  filter(group == 4) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group3_thick <- repl_k5_thick %>%  -->
-<!--   filter(group == 3) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group4_data <- list(group4_pheno, group4_myelin, group4_thick)
 
-<!-- group3_data <- list(group3_pheno, group3_myelin, group3_thick)   -->
+#Set Group 5
+group5_pheno <- repl_k5_pheno %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
+  t()
 
-<!-- #Set Group 4 -->
-<!-- group4_pheno <- repl_k5_pheno %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_myelin <- repl_k5_myelin %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group4_myelin <- repl_k5_myelin %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_thick <- repl_k5_thick %>%
+  filter(group == 5) %>%
+  select(-c(subid, group)) %>%
+  t()
 
-<!-- group4_thick <- repl_k5_thick %>%  -->
-<!--   filter(group == 4) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+group5_data <- list(group5_pheno, group5_myelin, group5_thick)
+```
 
-<!-- group4_data <- list(group4_pheno, group4_myelin, group4_thick)   -->
+### Run JIVE for Discovery Data, K=5, Group 1
 
-<!-- #Set Group 5 -->
-<!-- group5_pheno <- repl_k5_pheno %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+```{r, tidy=TRUE}
 
-<!-- group5_myelin <- repl_k5_myelin %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#################################
+## RUN JIVE for Group 1
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- group5_thick <- repl_k5_thick %>%  -->
-<!--   filter(group == 5) %>%  -->
-<!--   select(-c(subid, group)) %>%  -->
-<!--   t() -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- group5_data <- list(group5_pheno, group5_myelin, group5_thick)   -->
-<!-- ``` -->
+```
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 1 -->
+### Run JIVE for Discovery Data, K=5, Group 2
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
+#################################
+## RUN JIVE for Group 2
+try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- ################################# -->
-<!-- ## RUN JIVE for Group 1 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#################################
+```
 
-<!-- ``` -->
+### Run JIVE for Discovery Data, K=5, Group 3
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 2 -->
+```{r, tidy=TRUE}
 
-<!-- ```{r, tidy=TRUE} -->
-<!-- ################################# -->
-<!-- ## RUN JIVE for Group 2 -->
-<!-- try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm')) -->
+## RUN JIVE for Group 3
+try(cmi_jive_result <- jive(group3_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- ################################# -->
-<!-- ``` -->
+#################################
+```
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 3 -->
+### Run JIVE for Discovery Data, K=5, Group 4
 
-<!-- ```{r, tidy=TRUE} -->
+```{r, tidy=TRUE}
 
-<!-- ## RUN JIVE for Group 3 -->
-<!-- try(cmi_jive_result <- jive(group3_data, scale = TRUE, conv="default", method='perm')) -->
+## RUN JIVE for Group 4
+try(cmi_jive_result <- jive(group4_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
+#################################
+```
 
-<!-- ################################# -->
-<!-- ``` -->
+### Run JIVE for Discovery Data, K=5, Group 5
 
-<!-- ### Run JIVE for Discovery Data, K=5, Group 4 -->
+```{r, tidy=TRUE}
 
-<!-- ```{r, tidy=TRUE} -->
+## RUN JIVE for Group 5
+try(cmi_jive_result <- jive(group5_data, scale = TRUE, conv="default", method='perm'))
 
-<!-- ## RUN JIVE for Group 4 -->
-<!-- try(cmi_jive_result <- jive(group4_data, scale = TRUE, conv="default", method='perm')) -->
+#Plot variance explained by individual and joint ranks, and noise
+try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
-<!-- ################################# -->
-<!-- ``` -->
-
-<!-- ### Run JIVE for Discovery Data, K=5, Group 5 -->
-
-<!-- ```{r, tidy=TRUE} -->
-
-<!-- ## RUN JIVE for Group 5 -->
-<!-- try(cmi_jive_result <- jive(group5_data, scale = TRUE, conv="default", method='perm')) -->
-
-<!-- #Plot variance explained by individual and joint ranks, and noise -->
-<!-- try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d"))) -->
-
-<!-- ################################# -->
-<!-- ``` -->
+#################################
+```
 
