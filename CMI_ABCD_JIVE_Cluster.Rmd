@@ -135,19 +135,16 @@ group1_pheno <-  disc_k2_pheno %>%
   select(-c(subid, group)) %>% 
   sapply(as.numeric) %>% 
   t()
-has_na(group1_pheno)
 
 group1_myelin <- disc_k2_myelin %>% 
   filter(group == 1) %>% 
   select(-c(subid, group)) %>% 
   t()
-has_na(group1_myelin)
 
 group1_thick <- disc_k2_thick %>% 
   filter(group == 1) %>% 
   select(-c(subid, group)) %>% 
   t()
-has_na(group1_thick)
 
 group1_data <- list(group1_pheno, group1_myelin, group1_thick)  
 
