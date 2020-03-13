@@ -17,42 +17,46 @@ require(dplyr)
 ```
 
 ```{r read_in_files, tidy=TRUE, echo=FALSE}
+not_all_na <- function(x) any(!is.na(x))
 
 results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/FinalData'
-#results <- '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/Final_3.11.20'
+#results <- '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/Final_3.12.20'
 
 #Read in JIVE data
-pheno_cols = c('subjectid','crpbi_y_ss_parent',	'crpbi_y_ss_caregiver',	'trauma_num',	'fam_hist',	'pmq_y_ss_mean',	'srpf_y_ss_ses',	'nsc_p_ss_mean_3_items',	'fes_p_ss_fc')
+pheno_cols = c('subid','crpbi_y_ss_parent',	'crpbi_y_ss_caregiver',	'trauma_num',	'fam_hist',	'pmq_y_ss_mean',	'srpf_y_ss_ses',	'nsc_p_ss_mean_3_items',	'fes_p_ss_fc')
 
-pheno_data1 <- read_csv(paste(results,'8_phenotypic_scores_zscore_discovery.csv', sep='/'), 
-                        col_names = pheno_cols)
+pheno_data1 <- read_csv(paste(results,'discovery_zscore_clinical.csv', sep='/'), 
+                        col_names = pheno_cols) %>% 
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
 
-pheno_data2 <- read_csv(paste(results,'8_phenotypic_scores_zscore_replication.csv', sep='/'), 
-                        col_names = pheno_cols)
+pheno_data2 <- read_csv(paste(results,'replication_zscore_clinical.csv', sep='/'), 
+                        col_names = pheno_cols) %>% 
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
 
-demo_samp2 <- read_csv(paste(results,'demo_replication.csv', sep='/'), 
-                        col_names = TRUE) %>% 
-  rename('subjectid'=Var1, 'age'=Var2, 'sex'=Var3, 'unknown'=Var4) %>% 
-  select(-c(age, sex, unknown))
+samp1_ids <- select(pheno_data1, subid)
+samp2_ids <- select(pheno_data2, subid)
 
 #Read in myelin and thickess
 
-myelin_data_samp1 <- read_csv(paste(results,'CMI_ABCD_Sample1_myelin.csv', sep='/'), col_names = TRUE) %>% 
-  rename('subjectid'=Row)
+myelin_data_samp1 <- read_csv(paste(results,'discovery_zscore_myelin.csv', sep='/'), col_names = TRUE) %>% 
+  rename("subid" = CASE_FN_disc)
 
-thick_data_samp1 <- read_csv(paste(results, 'CMI_ABCD_Sample1_thickness.csv', sep='/'), col_names=TRUE)%>% 
-  rename('subjectid'=Row)
+thick_data_samp1 <- read_csv(paste(results, 'discovery_zscore_thickness.csv', sep='/'), col_names = TRUE)%>% 
+  rename("subid" = CASE_FN_disc)
 
 #Get column names from sample1, apply to sample2
-myelin_colnames <- colnames(myelin_data_samp1)[2:20485]
-thick_colnames <- colnames(thick_data_samp1)[2:20485]
 
-myelin_data_samp2 <- read_csv(paste(results,'CMI_ABCD_Sample2_myelin.csv', sep='/'), col_names = myelin_colnames)
-myelin_data_samp2 <-  bind_cols(demo_samp2, myelin_data_samp2)
+myelin_data_samp2 <- read_csv(paste(results,'replication_zscore_myelin.csv', sep='/'), col_names = TRUE) %>% 
+  rename("subid" = CASE_FN_repl)
 
-thick_data_samp2 <- read_csv(paste(results, 'CMI_ABCD_Sample2_thickness.csv', sep='/'), col_names=thick_colnames)
-thick_data_samp2 <- bind_cols(demo_samp2, thick_data_samp2)
+thick_data_samp2 <- read_csv(paste(results, 'replication_zscore_thickness.csv', sep='/'), col_names = TRUE)%>% 
+  rename("subid" = CASE_FN_repl)
 
+#Read in subtype membership data
 
 disc_k2 <- read_excel(paste(results,'subtype_membership.xlsx', sep='/'), sheet=1,
                      col_names=FALSE) %>% 
@@ -74,43 +78,49 @@ repl_k5 <- read_excel(paste(results,'subtype_membership.xlsx', sep='/'), sheet=4
 
 ```{r select_data, tidy=TRUE}
 
-#Combine pheno data to n=1000
-pheno_data <- rbind(pheno_data1, pheno_data2) %>% 
-  arrange(subjectid)
+not_all_na <- function(x) any(!is.na(x))
 
-#Select IDs for final sample
-complete_samp <- pheno_data %>% 
-  select(subjectid)
+#Drop ID columns; drop all columns that sum to 0
+myelin_data_samp1 <- myelin_data_samp1 %>%
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
 
-#Combine brain data to n=1000
-myelin_data <- rbind(myelin_data_samp1, myelin_data_samp2) %>% 
-  arrange(subjectid)
-thick_data <- rbind(thick_data_samp1, thick_data_samp2, on='subjectid') %>% 
-  arrange(subjectid)
+myelin_data_samp2 <- myelin_data_samp2 %>%
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
 
-pheno_data$subjectid <- as.character(pheno_data$subjectid)
-myelin_data$subjectid <- as.character(myelin_data$subjectid)
-thick_data$subjectid <- as.character(thick_data$subjectid)
+#Drop ID columns; drop all columns that sum to 0
+thick_data_samp1 <- thick_data_samp1 %>%
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
+
+thick_data_samp2 <- thick_data_samp2 %>%
+  na_if(0) %>% 
+  select_if(not_all_na) %>% 
+  replace_na(list('NA' = 0, 'Inf'= 0))
 
 ```
 
 ```{r set_samples, tidy=TRUE}
 
-disc_k2_pheno <- left_join(disc_k2, pheno_data, by = c('subid'='subjectid'))
-disc_k2_myelin <- left_join(disc_k2, myelin_data, by = c('subid'='subjectid'))
-disc_k2_thick <- left_join(disc_k2, thick_data, by = c('subid'='subjectid'))
+disc_k2_pheno <- left_join(disc_k2, pheno_data1)
+disc_k2_myelin <- left_join(disc_k2, myelin_data_samp1)
+disc_k2_thick <- left_join(disc_k2, thick_data_samp1)
 
-repl_k2_pheno <- left_join(repl_k2, pheno_data, by = c('subid'='subjectid'))
-repl_k2_myelin <- left_join(repl_k2, myelin_data, by = c('subid'='subjectid'))
-repl_k2_thick <- left_join(repl_k2, thick_data, by = c('subid'='subjectid'))
+repl_k2_pheno <- left_join(repl_k2, pheno_data2)
+repl_k2_myelin <- left_join(repl_k2, myelin_data_samp2)
+repl_k2_thick <- left_join(repl_k2, thick_data_samp2)
 
-disc_k5_pheno <- left_join(disc_k5, pheno_data, by = c('subid'='subjectid'))
-disc_k5_myelin <- left_join(disc_k5, myelin_data, by = c('subid'='subjectid'))
-disc_k5_thick <- left_join(disc_k5, thick_data, by = c('subid'='subjectid'))
+disc_k5_pheno <- left_join(disc_k5, pheno_data1)
+disc_k5_myelin <- left_join(disc_k5, myelin_data_samp1)
+disc_k5_thick <- left_join(disc_k5, thick_data_samp1)
 
-repl_k5_pheno <- left_join(repl_k5, pheno_data, by = c('subid'='subjectid'))
-repl_k5_myelin <- left_join(repl_k5, myelin_data, by = c('subid'='subjectid'))
-repl_k5_thick <- left_join(repl_k5, thick_data, by = c('subid'='subjectid'))
+repl_k5_pheno <- left_join(repl_k5, pheno_data2)
+repl_k5_myelin <- left_join(repl_k5, myelin_data_samp2)
+repl_k5_thick <- left_join(repl_k5, thick_data_samp2)
 
 ```
 
@@ -120,27 +130,32 @@ repl_k5_thick <- left_join(repl_k5, thick_data, by = c('subid'='subjectid'))
 
 #Discovery, K=2
 #Set Group 1
-group1_pheno <- disc_k2_pheno %>% 
+group1_pheno <-  disc_k2_pheno %>% 
   filter(group == 1) %>% 
   select(-c(subid, group)) %>% 
+  sapply(as.numeric) %>% 
   t()
+has_na(group1_pheno)
 
 group1_myelin <- disc_k2_myelin %>% 
   filter(group == 1) %>% 
   select(-c(subid, group)) %>% 
   t()
+has_na(group1_myelin)
 
 group1_thick <- disc_k2_thick %>% 
   filter(group == 1) %>% 
   select(-c(subid, group)) %>% 
   t()
+has_na(group1_thick)
 
 group1_data <- list(group1_pheno, group1_myelin, group1_thick)  
 
 #Set Group 2
 group2_pheno <- disc_k2_pheno %>% 
   filter(group == 2) %>% 
-  select(-c(subid, group)) %>% 
+  select(-c(subid, group)) %>%
+  sapply(as.numeric) %>% 
   t()
 
 group2_myelin <- disc_k2_myelin %>% 
@@ -162,7 +177,7 @@ group2_data <- list(group2_pheno, group2_myelin, group2_thick)
 ```{r, tidy=TRUE}
 
 ## RUN JIVE for Group 1
-try(cmi_jive_result <- jive(group1_data, scale = TRUE, conv="default", method='perm'))
+try(cmi_jive_result <- jive(group1_data, conv="default", method='perm'))
 
 #Plot variance explained by individual and joint ranks, and noise
 try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
@@ -563,3 +578,5 @@ try(cmi_jive_result <- jive(group5_data, scale = TRUE, conv="default", method='p
 try(cmi_jive_var <- showVarExplained(cmi_jive_result, col = c("#811c4e", "#fdb663", "#37486d")))
 
 #################################
+```
+
