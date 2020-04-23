@@ -1,0 +1,165 @@
+---
+title: "ABCD_CBCL_Plots"
+author: "Lucinda Sisk"
+date: "4/13/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+
+require(tidyverse)
+require(ggsignif)
+library(patchwork)
+library(ggsci)
+
+```
+
+```{r, tidy=TRUE}
+
+not_all_na <- function(x) any(!is.na(x))
+
+#results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/FinalData'
+data <- '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/CBCL_4.15.20'
+out = '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Figures/LS_CBCL'
+
+#Read in CBCL data
+cbcl1 <- read_csv(paste(data, 'subtype_clinicalvar_discovery.csv', sep='/'))
+cbcl2 <- read_csv(paste(data, 'subtype_clinicalvar_replication.csv', sep='/'))
+
+# cbcl_raw <- read_csv(paste(results, 'CBCL_data_4.13.20.csv', sep='/')) %>% 
+#     mutate("int_zscore" = scale(cbcl_scr_syn_internal_t, center=TRUE)) %>%
+#     mutate("ext_zscore" = scale(cbcl_scr_syn_external_t, center=TRUE)) %>%
+#     mutate("raw_zscore" = scale(cbcl_scr_syn_totprob_t, center=TRUE))
+
+```
+
+
+```{r, tidy=TRUE}
+#Comparisons between groups
+cbcl1$cbcl_scr_syn_internal_t <- as.numeric(cbcl1$cbcl_scr_syn_internal_t)
+cbcl1$cbcl_scr_syn_external_t <- as.numeric(cbcl1$cbcl_scr_syn_external_t)
+cbcl1$cbcl_scr_syn_totprob_t <- as.numeric(cbcl1$cbcl_scr_syn_totprob_t)
+cbcl1$subtypes5 <- as.numeric(cbcl1$subtypes5)
+
+my_comparisons <- list( c(1, 2), c(1, 3), c(1, 4), c(1, 5), c(2, 3), c(2, 4), c(2, 5), c(3, 4), c(3, 5), c(4, 5) )
+
+ggplot(data=cbcl1, aes(x=subtypes5, y=cbcl_scr_syn_internal_t, group=subtypes5)) +
+    geom_boxplot(fill=c("#ffffcc", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494")) +
+    theme_minimal()+
+    xlab("Neurosubtypes") + ylab("Mean Value (z-scored)")+ ggtitle("CBCL Internalizing Scores by Neurosubtype (Discovery)") +
+  geom_signif(comparisons = list( c(1, 3), c(2, 3), c(3,5) ),
+                                  step_increase=.1,
+              map_signif_level=TRUE) +
+  theme(plot.title = element_text(face = "bold")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r, tidy=TRUE}
+### Raw Scores
+#Discovery
+
+#Update ggplot settings
+
+(int_disc <- ggplot(data=cbcl1, aes(x=subtypes5, y=cbcl_scr_syn_internal_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(1, 3) ),
+                    test=t.test,
+                    step_increase=.1,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal() +
+        xlab("Neurosubtypes") + ylab("Raw Score") + ggtitle("Internalizing Scores")+
+   theme(plot.title = element_text(face = "bold")) +
+   theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Int_DISC.png', sep='/'), plot=int_disc, device=png(),height = 8, width = 6)
+
+(ext_disc <- ggplot(data=cbcl1, aes(x=subtypes5, y=cbcl_scr_syn_external_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(1, 2), c(1, 3), c(3,4), c(3,5) ),
+                    test=t.test,
+                    step_increase=.1,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal() +
+        xlab("Neurosubtypes") + ylab("Raw Score") + ggtitle("Externalizing Scores")+
+  theme(plot.title = element_text(face = "bold")) +
+    theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Ext_DISC.png', sep='/'), plot=ext_disc, device=png(),height = 8, width = 6)
+
+(tot_disc <- ggplot(data=cbcl1, aes(x=subtypes5, y=cbcl_scr_syn_totprob_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(1, 3), c(3,4), c(3,5) ),
+                    step_increase=.1,
+                    test=t.test,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal()+
+        xlab("Neurosubtypes") + ylab("Raw Score") + ggtitle("Total Problem Scores")+
+  theme(plot.title = element_text(face = "bold")) +
+    theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Totprob_DISC.png', sep='/'), plot=tot_disc, device=png(), height = 8, width = 6)
+
+#Replication
+
+(int_repl <- ggplot(data=cbcl2, aes(x=subtypes5, y=cbcl_scr_syn_internal_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(3,5) ),
+                    step_increase=.1,
+                    test=t.test,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal()+
+        xlab("Neurosubtypes") + ylab("Raw Score")+ ggtitle("Internalizing Scores (Replication)")+
+  theme(plot.title = element_text(face = "bold")) +
+    theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Int_REPL.png', sep='/'), plot=int_repl, device=png(), height = 8, width = 6)
+
+(ext_repl <- ggplot(data=cbcl2, aes(x=subtypes5, y=cbcl_scr_syn_external_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(1, 5), c(2,5), c(3,5), c(4,5) ),
+                    step_increase=.1,
+                    test=t.test,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal()+
+        xlab("Neurosubtypes") + ylab("Raw Score") + ggtitle("Externalizing Scores (Replication)")+
+  theme(plot.title = element_text(face = "bold")) +
+    theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Ext_REPL.png', sep='/'), plot=ext_repl, device=png(), height = 8, width = 6)
+
+(tot_repl <- ggplot(data=cbcl2, aes(x=subtypes5, y=cbcl_scr_syn_totprob_t, group=subtypes5)) +
+        geom_boxplot(fill=c("#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6")) +
+        geom_signif(comparisons = list( c(1, 5), c(3,5), c(4,5) ),
+                    step_increase=.1,
+                    test=t.test,
+                    map_signif_level=TRUE,
+                    textsize=8) +
+        theme_minimal()+
+        xlab("Neurosubtypes") + ylab("Raw Score") + ggtitle("Total Problem Scores (Replication)")+
+  theme(plot.title = element_text(face = "bold")) +
+    theme(plot.title = element_text(size = 20)) +
+   theme(text = element_text(size = 20)) +
+  theme(plot.title = element_text(hjust = 0.5)))
+
+ggsave(paste(out, 'CBCL_Totprob_REPL.png', sep='/'), plot=tot_repl, device=png(),height = 8, width = 6)
+
+
+```

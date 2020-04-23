@@ -13,14 +13,17 @@ require(tidyverse)
 require(r.jive)
 require(readxl)
 require(dplyr)
+library(Spectrum)
+library(plot3D)
+
 
 ```
 
 ```{r read_in_files, tidy=TRUE, echo=FALSE}
 not_all_na <- function(x) any(!is.na(x))
 
-results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/FinalData'
-#results <- '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/Final_3.12.20'
+#results <- '/gpfs/milgram/project/gee_dylan/lms233/CMI_ABCD/FinalData'
+results <- '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/Final_3.12.20'
 
 #Read in JIVE data
 pheno_cols = c('subid','crpbi_y_ss_parent',	'crpbi_y_ss_caregiver',	'trauma_num',	'fam_hist',	'pmq_y_ss_mean',	'srpf_y_ss_ses',	'nsc_p_ss_mean_3_items',	'fes_p_ss_fc')
@@ -111,20 +114,12 @@ thick_data_samp2 <- thick_data_samp2 %>%
 ```{r set_samples, tidy=TRUE}
 
 disc_k2_pheno <- left_join(disc_k2, pheno_data1)
-disc_k2_myelin <- left_join(disc_k2, myelin_data_samp1[1:30])
-disc_k2_thick <- left_join(disc_k2, thick_data_samp1[1:30])
+disc_k2_myelin <- left_join(disc_k2, myelin_data_samp1) #[1:30])
+disc_k2_thick <- left_join(disc_k2, thick_data_samp1) #[1:30])
 
 repl_k2_pheno <- left_join(repl_k2, pheno_data2)
-repl_k2_myelin <- left_join(repl_k2, myelin_data_samp2[1:30])
-repl_k2_thick <- left_join(repl_k2, thick_data_samp2[1:30])
-
-disc_k5_pheno <- left_join(disc_k5, pheno_data1)
-disc_k5_myelin <- left_join(disc_k5, myelin_data_samp1[1:30])
-disc_k5_thick <- left_join(disc_k5, thick_data_samp1[1:30])
-
-repl_k5_pheno <- left_join(repl_k5, pheno_data2)
-repl_k5_myelin <- left_join(repl_k5, myelin_data_samp2[1:30])
-repl_k5_thick <- left_join(repl_k5, thick_data_samp2[1:30])
+repl_k2_myelin <- left_join(repl_k2, myelin_data_samp2) #[1:30])
+repl_k2_thick <- left_join(repl_k2, thick_data_samp2) #[1:30])
 
 ```
 ## Set group info for Overall Runs
@@ -145,6 +140,7 @@ disc_thick_j <- disc_k2_thick %>%
   t()
 
 disc_data <- list(disc_pheno_j, disc_myelin_j, disc_thick_j)
+raw_data_disc_mat <- rbind(disc_pheno_j, disc_myelin_j, disc_thick_j)
 
 #Set replication sample
 
@@ -162,6 +158,7 @@ repl_thick_j <- repl_k2_thick %>%
   t()
 
 repl_data <- list(repl_pheno_j, repl_myelin_j, repl_thick_j)
+raw_data_repl_mat <- rbind(repl_pheno_j, repl_myelin_j, repl_thick_j)
 
 ```
 
@@ -176,6 +173,11 @@ try(cmi_jive_result_disc <- jive(disc_data, conv="default", method='perm'))
 #Plot variance explained by individual and joint ranks, and noise
 try(cmi_jive_var_disc <- showVarExplained(cmi_jive_result_disc, col = c("#811c4e", "#fdb663", "#37486d")))
 
+
+(cmi_jive_result_disc$rankA)
+
+showPCA(cmi_jive_result_disc, n_joint = 1, n_indiv = c(1,1,1), 
+         Colors = c("red", "blue", "orange"), pch=1)
 ```
 
 ```{r, tidy=TRUE}
@@ -205,29 +207,26 @@ thick_result_individual_disc <- cmi_jive_result_disc$individual[3] %>%
   as_tibble(.name_repair = ~"thick_individual") %>% 
   as.matrix()
 
-pheno_tibble <- rbind(pheno_result_joint_disc, pheno_result_individual_disc)
-myelin_tibble <- rbind(myelin_result_joint_disc, myelin_result_individual_disc)
-thick_tibble <- rbind(thick_result_joint_disc, thick_result_individual_disc)
-all_data_mat <- rbind(pheno_tibble, myelin_tibble, thick_tibble)
+pheno_tibble_disc <- rbind(pheno_result_joint_disc, pheno_result_individual_disc)
+myelin_tibble_disc <- rbind(myelin_result_joint_disc, myelin_result_individual_disc)
+thick_tibble_disc <- rbind(thick_result_joint_disc, thick_result_individual_disc)
+all_data_mat_disc<- rbind(pheno_tibble_disc, myelin_tibble_disc, thick_tibble_disc)
 
-spec_data_all <- list(pheno_tibble, myelin_tibble, thick_tibble)
-spec_data_joint <- list(pheno_result_joint_disc, myelin_result_joint_disc, thick_result_joint_disc)
-spec_data_individ <- list(pheno_result_individual_disc, myelin_result_individual_disc,
+spec_data_all_disc <- list(pheno_tibble_disc, myelin_tibble_disc, thick_tibble_disc)
+spec_data_joint_disc <- list(pheno_result_joint_disc, myelin_result_joint_disc, thick_result_joint_disc)
+spec_data_individ_disc <- list(pheno_result_individual_disc, myelin_result_individual_disc,
                           thick_result_individual_disc)
 
-library(Spectrum)
-library(plot3D)
+jive_cluster_disc <- Spectrum(spec_data_individ_disc, maxk=10)
 
-jive_cluster_disc <- Spectrum(spec_data_all, maxk=10)
+#Dimensionality Reduction using tSNE (t-Distributed Stochastic Neighbor Embedding); good for plotting
+disc_rtsne <- Rtsne(t(raw_data_disc_mat),dim=3)
 
-y <- Rtsne(t(all_data_mat),dim=3)
-png(paste(results, 'development_cluster_plot.png', sep='/'))
-plot3d <- scatter3D(y$Y[,1],y$Y[,2],y$Y[,3], phi = 0, #bty = "g", ex = 2,
+#3D plot the results
+(plot3d <- scatter3D(disc_rtsne$Y[,1],disc_rtsne$Y[,2],disc_rtsne$Y[,3], phi = 0, #bty = "g", ex = 2,
           ticktype = "detailed", colvar = jive_cluster_disc$assignments,
-          col = gg.col(100), pch=20, cex=2, #type = 'h',
-          xlab='Pheno Data', ylab='Myelin', zlab='Thickness')
-
-dev.off()
+          col = gg.col(2), pch=20, cex=2, #type = 'h',
+          xlab='Pheno Data (raw values)', ylab='Myelination (raw values)', zlab='Thickness(raw values)', main = "3D JIVE Clustering of Brain & Behav Data (Discovery)"))
 
 ```
 
@@ -242,7 +241,16 @@ write_csv(x, paste(results, 'Discovery_Data_Cluster_Assignments.csv', sep='/'))
 
 ```
 
+```{r, tidy=TRUE}
 
+#3D plot with SNF grouping
+(plot3d_disc_snf <- scatter3D(disc_rtsne$Y[,1],disc_rtsne$Y[,2],disc_rtsne$Y[,3], phi = 0, #bty = "g", ex = 2,
+          ticktype = "detailed", colvar = disc_k2$group,
+          col = jet.col(2), pch=20, cex=2, #type = 'h',
+          xlab='Pheno Data (raw values)', ylab='Myelination (raw values)', zlab='Thickness (raw values)', main = "3D SNF Clustering of Brain & Behav Data (Discovery)"))
+
+
+```
 
 
 
@@ -258,6 +266,9 @@ try(cmi_jive_result_repl <- jive(repl_data, scale = TRUE, conv="default", method
 #Plot variance explained by individual and joint ranks, and noise
 try(cmi_jive_var_repl <- showVarExplained(cmi_jive_result_repl, col = c("#811c4e", "#fdb663", "#37486d")))
 
+#Show PCA grouping
+showPCA(cmi_jive_result_repl, n_joint = 1, n_indiv = c(1,1,1), 
+         Colors = c("red", "blue", "orange"), pch=1)
 ```
 
 ```{r, tidy=TRUE}
@@ -287,30 +298,31 @@ thick_result_individual_repl <- cmi_jive_result_repl$individual[3] %>%
   as_tibble(.name_repair = ~"thick_individual") %>% 
   as.matrix()
 
-pheno_tibble <- rbind(pheno_result_joint_repl, pheno_result_individual_repl)
-myelin_tibble <- rbind(myelin_result_joint_repl, myelin_result_individual_repl)
-thick_tibble <- rbind(thick_result_joint_repl, thick_result_individual_repl)
-all_data_mat <- rbind(pheno_tibble, myelin_tibble, thick_tibble)
+pheno_tibble_repl <- rbind(pheno_result_joint_repl, pheno_result_individual_repl)
+myelin_tibble_repl <- rbind(myelin_result_joint_repl, myelin_result_individual_repl)
+thick_tibble_repl <- rbind(thick_result_joint_repl, thick_result_individual_repl)
+all_data_mat_repl <- rbind(pheno_tibble, myelin_tibble, thick_tibble)
 
-spec_data_all <- list(pheno_tibble, myelin_tibble, thick_tibble)
-spec_data_joint <- list(pheno_result_joint_repl, myelin_result_joint_repl, thick_result_joint_repl)
-spec_data_individ <- list(pheno_result_individual_repl, myelin_result_individual_repl,
+spec_data_all_repl <- list(pheno_tibble_repl, myelin_tibble_repl, thick_tibble_repl)
+spec_data_join_replt <- list(pheno_result_joint_repl, myelin_result_joint_repl, thick_result_joint_repl)
+spec_data_individ_repl <- list(pheno_result_individual_repl, myelin_result_individual_repl,
                           thick_result_individual_repl)
 
 library(Spectrum)
 library(plot3D)
 
-jive_cluster_repl <- Spectrum(spec_data_all, maxk=10)
+jive_cluster_repl <- Spectrum(spec_data_individ_repl, maxk=10) 
 
+#Dimensionality Reduction using tSNE (t-Distributed Stochastic Neighbor Embedding); good for plotting
+repl_rtsne <- Rtsne(t(raw_data_repl_mat),dim=3)
 
-y <- Rtsne(t(all_data_mat),dim=3)
-png(paste(results, 'development_cluster_plot.png', sep='/'))
-plot3d <- scatter3D(y$Y[,1],y$Y[,2],y$Y[,3], phi = 0, #bty = "g", ex = 2,
+#3D plot the results
+
+(plot3d <- scatter3D(repl_rtsne$Y[,1],repl_rtsne$Y[,2],repl_rtsne$Y[,3], phi = 0, #bty = "g", ex = 2,
           ticktype = "detailed", colvar = jive_cluster_repl$assignments,
-          col = gg.col(100), pch=20, cex=2, #type = 'h',
-          xlab='Dim1', ylab='Dim2', zlab='Dim3')
+          col = gg.col(3), pch=20, cex=2, #type = 'h',
+          xlab='Pheno Data (raw values)', ylab='Myelination (raw values)', zlab='Thickness (raw values)', main = "3D JIVE Clustering of Brain & Behav Data (Replication)"))
 
-dev.off()
 
 ```
 
@@ -318,10 +330,37 @@ dev.off()
 
 # Create data frame 
 
-x <- data_frame(jive_cluster$assignments) %>% 
-  cbind(samp1_ids)
-write_csv(x, paste(results, 'Replication_Data_Cluster_Assignments.csv', sep='/'))
+z <- data_frame(jive_cluster_repl$assignments) %>% 
+  cbind(samp2_ids)
+write_csv(z, paste(results, 'Replication_Data_Cluster_Assignments.csv', sep='/'))
+
+(plot3d_repl_snf <- scatter3D(repl_rtsne$Y[,1],repl_rtsne$Y[,2],repl_rtsne$Y[,3], phi = 0, #bty = "g", ex = 2,
+          ticktype = "detailed", colvar = repl_k2$group,
+          col = jet.col(2), pch=20, cex=2, #type = 'h',
+          xlab='Pheno Data (raw values)', ylab='Myelination (raw values)', zlab='Thickness (raw values)s', main = "3D JIVE Clustering of Brain & Behav Data (Replication)"))
 
 ```
 
+################################################################################################
 
+## Group difference analysis
+
+################################################################################################
+
+```{r, tidy=TRUE}
+
+#Discovery
+snf_disc_k2 <- disc_k2
+jive_disc_k2 <- jive_cluster_disc$assignments 
+both_disc <- cbind(snf_disc_k2, jive_disc_k2) 
+
+(prop_disc_same <- mean(both_disc[["group"]]==both_disc[["jive_disc_k2"]]))
+
+#Replication
+snf_repl_k2 <- repl_k2
+jive_repl_k2 <- jive_cluster_repl$assignments
+both_repl <- cbind(snf_repl_k2, jive_repl_k2) 
+
+(prop_repl_same <- mean(both_repl[["group"]]==both_repl[["jive_repl_k2"]]))
+
+```

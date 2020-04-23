@@ -1,0 +1,101 @@
+---
+title: "Get_ABCD_CMI_Pheno_Data"
+author: "Lucinda Sisk"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE, conflict_prefer("select", "dplyr"), conflict_prefer("filter", "dplyr")}
+library(tidyverse)
+library(dplyr)
+library(hablar)
+library(eqs2lavaan)
+```
+
+```{r, tidy=TRUE}
+
+sample1 <- read_csv('/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample1_IDs.csv') 
+sample2 <- read_csv('/Users/lucindasisk/Box/LS_Folders//CANDLab/Projects/CMI_Structural_ABCD/Data/CMI_ABCD_Sample2_IDs.csv')
+
+samples <- rbind(sample1, sample2) %>% 
+    arrange(subjectkey)
+
+abcd_demog <- read_tsv('/Users/lucindasisk/Desktop/ABCD/ABCDstudyNDA-2.0/pdem02.txt') %>% 
+    mutate("subjectkey" = str_remove(subjectkey, "_")) %>% 
+    filter(eventname == "baseline_year_1_arm_1") %>% 
+    right_join(samples, by="subjectkey") %>% 
+    arrange(subjectkey)
+
+```
+
+```{r, tidy=TRUE}
+house_inc <- abcd_demog %>% 
+    select(subjectkey, demo_comb_income_v2) %>% 
+    write_csv('~/Desktop/ABCD_family_income.csv')
+
+asian <- abcd_demog %>% 
+    select(subjectkey, demo_race_a_p___18, demo_race_a_p___19, demo_race_a_p___20,
+                           demo_race_a_p___21, demo_race_a_p___22, demo_race_a_p___23,
+                           demo_race_a_p___24) %>% 
+    #Sum categories to create Asian category
+    convert(int(c(demo_race_a_p___18, demo_race_a_p___19, demo_race_a_p___20,
+                           demo_race_a_p___21, demo_race_a_p___22, demo_race_a_p___23,
+                           demo_race_a_p___24))) %>% 
+    mutate(asian_all = rowSums(.[2:8], na.rm=TRUE)) %>% 
+    select(subjectkey, asian_all) %>% 
+    mutate(asian_all_bin = recode(asian_all, "3" = "1", "2" = "1", "1"="1", "0"="0"))
+
+native <- abcd_demog %>% 
+    select(subjectkey,demo_race_a_p___12, demo_race_a_p___13) %>% 
+    #Sum categories to create Native American Indian/Alaska Native category
+    convert(int(c(demo_race_a_p___12, demo_race_a_p___13))) %>% 
+    mutate(native_all = rowSums(.[2:3], na.rm=TRUE)) %>% 
+    select(subjectkey, native_all) %>% 
+    mutate(native_all_bin = recode(native_all, "3" = "1", "2" = "1", "1"="1", "0"="0"))
+
+haw_pi <- abcd_demog %>% 
+    select(subjectkey,demo_race_a_p___14, demo_race_a_p___15, 
+                  demo_race_a_p___16, demo_race_a_p___17) %>% 
+    #Sum categories to create Hawaiian/PI category
+    convert(int(c(demo_race_a_p___14, demo_race_a_p___15, 
+                  demo_race_a_p___16, demo_race_a_p___17))) %>% 
+    mutate(pi_all = rowSums(.[2:5], na.rm=TRUE)) %>% 
+    select(subjectkey, pi_all) %>% 
+    mutate(pi_all_bin = recode(pi_all, "4" = "1", "3" = "1", "2" = "1", "1"="1", "0"="0"))
+    
+dontknow <- abcd_demog %>% 
+    select(subjectkey,demo_race_a_p___77, demo_race_a_p___99) %>% 
+    #Missing/Don't know
+    convert(int(c(demo_race_a_p___77, demo_race_a_p___99))) %>% 
+    mutate(dontknow_all = rowSums(.[2:3], na.rm=TRUE)) %>% 
+    select(subjectkey, dontknow_all) %>% 
+    mutate(dontknow_all_bin = recode(dontknow_all, "4" = "1", "3" = "1", "2" = "1", "1"="1", "0"="0"))
+
+all_race <- full_join(abcd_demog, asian) %>% 
+    full_join(native) %>% 
+    full_join(haw_pi) %>% 
+    full_join(dontknow) %>% 
+    #Select white, black, NAI/AN, Asian, Hawaiian/PI, Other, Missing/Decline to Report
+    select(subjectkey, demo_race_a_p___10, demo_race_a_p___11, native_all_bin, asian_all_bin, pi_all_bin,
+           demo_race_a_p___25, dontknow_all_bin)
+
+```
+```{r, tidy=TRUE}
+#Check discrepencies between discovery and replication
+#Summarize race data
+race_data <- all_race %>% 
+    select(-c(subjectkey)) %>% 
+    convert(int(c(demo_race_a_p___10, demo_race_a_p___11, native_all_bin, asian_all_bin, pi_all_bin,
+           demo_race_a_p___25, dontknow_all_bin))) %>% 
+    summarize_all(sum)
+
+#Summarize income data
+house_income
+
+#Chi-square
+chisq <- chisq.test(race_data)
+chisq
+
+```
+
+

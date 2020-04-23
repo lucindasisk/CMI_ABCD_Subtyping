@@ -321,16 +321,15 @@ fam_hist <- full_join(mentalhealth_fh, criminal_fh, by="subjectkey") %>%
 
 ```{r, tidy=TRUE}
 # Create final data frame
-final_join <- full_join(release, crpbi_parent_mean, by=c("subjectkey")) %>% 
-    full_join(crpbi_caregiver_mean, by="subjectkey") %>% 
-    full_join(phys_ab, by="subjectkey") %>% 
-    full_join(sex_ab, by="subjectkey") %>% 
-    full_join(exp_violence, by="subjectkey") %>% 
-    full_join(trauma_other, by="subjectkey") %>% 
+final_join <- full_join(crpbi_parent_mean, crpbi_caregiver_mean, by=c("subjectkey")) %>% 
+    #full_join(phys_ab, by="subjectkey") %>% 
+    #full_join(sex_ab, by="subjectkey") %>% 
+    #full_join(exp_violence, by="subjectkey") %>% 
+    #full_join(trauma_other, by="subjectkey") %>% 
     full_join(trauma_all, by='subjectkey') %>% 
-    full_join(mentalhealth_fh, by="subjectkey") %>% 
-    full_join(substance_fh, by="subjectkey") %>% 
-    full_join(criminal_fh, by="subjectkey") %>% 
+    #full_join(mentalhealth_fh, by="subjectkey") %>% 
+    #full_join(substance_fh, by="subjectkey") %>% 
+    #full_join(criminal_fh, by="subjectkey") %>% 
     full_join(fam_hist, by="subjectkey") %>% 
     full_join(pmq_mean, by="subjectkey") %>% 
     full_join(school_environment, by="subjectkey") %>% 
@@ -342,52 +341,12 @@ final_join <- full_join(release, crpbi_parent_mean, by=c("subjectkey")) %>%
     mutate("subjectkey" = str_remove(subjectkey, "_"))
 
 
-# final_sample_1 <- merge(sample1, final_join, all.x=TRUE, all.y=FALSE)
-# final_sample_2 <- inner_join(sample2, final_join)
-
-#Rename to relevant sample (CHECK THIS TO MAKE SURE RIGHT VARS ARE INCLUDED)
-# final_sample_all_vars <- final_join
-# final_sample_summed_trauma_all <- final_join
-# final_sample_summed_trauma_fh_all <- final_join
-
 ```
 
 ```{r, tidy=TRUE}
 #Write data to CSV
 
-# write_csv(final_sample_all_vars, '/Users/lucindasisk/Box/LS_Folders/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_allVars_allIDs_2.29.20.csv')
-
-# write_csv(final_sample_2, '/Users/lucindasisk/Dropbox/CANDLab/Projects/CMI_Structural_ABCD/Data/LS_PhenoData_Sample2_2.24.19.csv')
-```
-
-```{r, tidy-TRUE}
-library(corrr)
-par(mar=c(7,4,4,2)+1) 
-
-#Drop subid column and convert to numeric type
-final_join_mat <- final_join %>% 
-    select(-c(subjectkey)) %>% 
-    sapply(as.numeric)
-
-#Create covariance matrix
-col = c("#cd071e", "#FF0000", "#8cc6e0")
-par(mar=c(7,4,4,2)+0.1) 
-png(filename='/Users/lucindasisk/Desktop/Covariance_Plot.png', width=800, height=750)
-heatmap(cov_mat, symm=TRUE, revC=TRUE, keep.dendro = FALSE, cexRow=1,cexCol=1,margins=c(12,8))
-graphics.off()
-
-```
-
-```{r, tidy=TRUE}
-library(corrplot)
-
-#Create correlation matrix from final join matrix
-corr_mat <- cor(final_join_mat) 
-
-par(mar=c(7,4,4,2)+0.1)
-png(filename='/Users/lucindasisk/Desktop/Correlation_Plot.png', width=800, height=750)
-corrplot(corr_mat)
-graphics.off()
+# write_csv(final_join, 'FILEPATHHERE/pheno_data.csv')
 
 ```
 
